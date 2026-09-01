@@ -1,0 +1,88 @@
+/* One control, styled as quietly as a control can be: the brand's 6px radius,
+   a hairline, and the system's own list behind it. */
+
+.form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.label {
+  color: var(--au-muted);
+  font-size: var(--au-t-caption);
+  font-weight: 500;
+  line-height: 22px;
+  letter-spacing: -0.01em;
+}
+
+.field {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.select {
+  appearance: none;
+  -webkit-appearance: none;
+  min-height: 44px;
+  /* Room on the right for the chevron, which is not part of the text box. */
+  padding: 10px 40px 10px 14px;
+  border: 1px solid var(--au-rule-strong);
+  border-radius: var(--au-r-btn);
+  background: var(--au-ground);
+  color: var(--au-ink);
+  font-family: inherit;
+  /* 16px, not 15px: anything smaller makes iOS Safari zoom the whole page in
+     on focus, and the reader is on a phone about half the time. */
+  font-size: var(--au-t-body);
+  font-weight: 500;
+  line-height: 22px;
+  letter-spacing: -0.016em;
+  cursor: pointer;
+  transition: background-color 120ms ease-out, border-color 120ms ease-out;
+}
+
+.select:hover {
+  background: var(--au-ground-warm);
+  border-color: var(--au-rule-strong);
+}
+
+.chevron {
+  position: absolute;
+  right: 14px;
+  /* The mark is decoration over the control; the click belongs to the select. */
+  pointer-events: none;
+  color: var(--au-muted);
+}
+
+/* While the server is re-reading the numbers the control steps back rather
+   than spinning. Nothing moves, nothing flashes, and the words never change
+   under the cursor. */
+.field[data-pending] .select {
+  color: var(--au-muted);
+}
+
+.submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding-inline: 18px;
+  border: 1px solid var(--au-slate-line);
+  border-radius: var(--au-r-btn);
+  background: var(--au-slate-tint);
+  color: var(--au-slate-deep);
+  font-family: inherit;
+  font-size: var(--au-t-body);
+  font-weight: 500;
+  line-height: 22px;
+  letter-spacing: -0.016em;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .select {
+    transition: none;
+  }
+}

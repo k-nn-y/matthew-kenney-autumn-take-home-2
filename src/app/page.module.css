@@ -1,0 +1,96 @@
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-block: 40px 28px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 1.06;
+  letter-spacing: -0.026em;
+  color: var(--au-ink);
+  font-variation-settings: "opsz" 32;
+}
+
+.sub { margin-top: 8px; color: var(--au-muted); font-size: var(--au-t-caption); }
+
+.h2 {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.019em;
+  color: var(--au-ink);
+  padding-bottom: 18px;
+}
+
+/* The two numbers that answer rank 1. They get the page's only figure tier. */
+.headline {
+  display: grid;
+  gap: 24px;
+  padding: 28px 0 36px;
+  border-block: 1px solid var(--au-rule);
+}
+
+.card {
+  background: var(--au-ground);
+  border: 1px solid var(--au-rule);
+  border-radius: var(--au-r-card);
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.costGrid { display: grid; gap: 20px; padding-bottom: 20px; }
+
+.note, .lead, .footnote {
+  color: var(--au-body);
+  font-size: var(--au-t-body);
+  line-height: 25px;
+  letter-spacing: -0.016em;
+}
+
+.note { padding-top: 18px; border-top: 1px solid var(--au-rule); }
+.lead { padding-bottom: 20px; }
+.footnote { padding-top: 14px; color: var(--au-muted); font-size: var(--au-t-caption); line-height: 22px; }
+.note strong, .lead strong { color: var(--au-ink); font-weight: 500; }
+
+/* Proportion carried by ink strength, never by two hues. */
+.splitBar { display: flex; gap: 3px; height: 10px; margin-bottom: 20px; }
+.splitByName { background: var(--au-ink); opacity: 0.28; border-radius: 2px; }
+.splitNew { background: var(--au-ink); opacity: 0.86; border-radius: 2px; }
+.splitLegend { display: grid; gap: 20px; }
+
+.trend { width: 100%; height: auto; display: block; }
+
+.insights { display: flex; flex-direction: column; }
+.insight { padding-block: 20px; border-top: 1px solid var(--au-rule); }
+.insight:first-child { border-top: 0; padding-top: 0; }
+.insightWhen {
+  font-family: var(--au-font-label);
+  font-size: var(--au-t-label);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--au-muted);
+  padding-bottom: 8px;
+}
+.insightHead {
+  font-size: var(--au-t-lead);
+  font-weight: 500;
+  line-height: 26px;
+  letter-spacing: -0.018em;
+  color: var(--au-ink);
+  padding-bottom: 6px;
+}
+.insightAction { padding-top: 8px; color: var(--au-slate-deep); font-size: var(--au-t-caption); }
+
+.more { padding: 8px 0 64px; }
+
+@media (min-width: 900px) {
+  .head { flex-direction: row; align-items: flex-end; justify-content: space-between; padding-block: 56px 36px; }
+  .title { font-size: 40px; letter-spacing: -0.028em; }
+  .headline { grid-template-columns: 1fr 1fr; gap: 48px; padding: 36px 0 44px; }
+  .costGrid { grid-template-columns: repeat(3, 1fr); }
+  .splitLegend { grid-template-columns: 1fr 1fr; }
+  .card { padding: 28px; }
+}

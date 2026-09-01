@@ -1,0 +1,80 @@
+.head { display: flex; flex-direction: column; gap: 16px; padding-block: 28px; }
+.back { padding-bottom: 12px; font-size: var(--au-t-caption); }
+.back a { color: var(--au-body); }
+.back a:hover { color: var(--au-ink); }
+
+.title {
+  font-size: 32px; font-weight: 500; line-height: 1.06;
+  letter-spacing: -0.026em; color: var(--au-ink);
+  font-variation-settings: "opsz" 32;
+}
+.sub { margin-top: 8px; color: var(--au-muted); font-size: var(--au-t-caption); }
+
+.h2 {
+  font-size: 20px; font-weight: 500; line-height: 1.2;
+  letter-spacing: -0.019em; color: var(--au-ink); padding-bottom: 18px;
+}
+
+.card {
+  background: var(--au-ground);
+  border: 1px solid var(--au-rule);
+  border-radius: var(--au-r-card);
+  padding: 24px; margin-bottom: 20px;
+}
+.closing { padding: 8px 0 64px; }
+
+.pathGrid { display: grid; gap: 20px; padding-bottom: 20px; }
+
+.note, .lead, .footnote {
+  color: var(--au-body); font-size: var(--au-t-body);
+  line-height: 25px; letter-spacing: -0.016em;
+}
+.note { padding-top: 18px; border-top: 1px solid var(--au-rule); }
+.lead { padding-bottom: 4px; }
+.footnote { padding-top: 12px; color: var(--au-muted); font-size: var(--au-t-caption); line-height: 22px; }
+.note strong, .lead strong { color: var(--au-ink); font-weight: 500; }
+
+/* Hairlines, not boxes. Nothing here is a zebra stripe or a filled cell. */
+.scroll { overflow-x: auto; }
+.table { width: 100%; border-collapse: collapse; font-size: var(--au-t-caption); }
+.table th, .table td { padding: 12px 10px; text-align: left; border-top: 1px solid var(--au-rule); }
+.table thead th {
+  border-top: 0; border-bottom: 1px solid var(--au-rule-strong);
+  font-family: var(--au-font-label); font-size: var(--au-t-label);
+  font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase; color: var(--au-muted);
+  white-space: nowrap;
+}
+.table td { color: var(--au-body); font-variant-numeric: tabular-nums; }
+.rowHead { font-weight: 500; color: var(--au-ink); }
+.numCol { text-align: right; font-variant-numeric: tabular-nums; }
+.table th.numCol { text-align: right; }
+
+.feeders { display: flex; flex-direction: column; }
+.feeder {
+  display: grid;
+  grid-template-columns: 1fr 44px 60px;
+  grid-template-areas: "name count value" "bar bar bar";
+  align-items: center; gap: 6px 10px;
+  padding-block: 12px; border-top: 1px solid var(--au-rule);
+}
+.feeder:first-child { border-top: 0; }
+.feederName { grid-area: name; color: var(--au-ink); font-size: var(--au-t-body); }
+.feederCount { grid-area: count; text-align: right; color: var(--au-ink); }
+.feederValue { grid-area: value; text-align: right; color: var(--au-muted); font-size: var(--au-t-caption); }
+.feederBar { grid-area: bar; display: block; height: 4px; background: var(--au-rule); border-radius: 2px; }
+.feederBar > span { display: block; height: 100%; background: var(--au-ink); opacity: 0.55; border-radius: 2px; }
+
+.more { padding-top: 20px; }
+
+@media (min-width: 900px) {
+  .head { flex-direction: row; align-items: flex-end; justify-content: space-between; padding-block: 40px 32px; }
+  .title { font-size: 40px; letter-spacing: -0.028em; }
+  .card { padding: 28px; }
+  .pathGrid { grid-template-columns: repeat(3, 1fr); }
+  .table { font-size: var(--au-t-body); }
+  .feeder {
+    grid-template-columns: 200px 1fr 56px 84px;
+    grid-template-areas: "name bar count value";
+    gap: 16px;
+  }
+}
