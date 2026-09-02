@@ -86,6 +86,17 @@ export function SeasonChart({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /* A touch keeps its readout after the finger lifts; touching anywhere
+     off the chart puts it away. */
+  useEffect(() => {
+    if (active === null) return;
+    const away = (e: PointerEvent) => {
+      if (!svgRef.current?.contains(e.target as Node)) setActive(null);
+    };
+    document.addEventListener("pointerdown", away);
+    return () => document.removeEventListener("pointerdown", away);
+  }, [active]);
+
   if (n < 2) return null;
 
   const max = Math.max(1, ...series.map((p) => p.bookings));
@@ -194,13 +205,21 @@ export function SeasonChart({
           ref={svgRef}
           id="au-season"
           viewBox={`-2 -20 ${VW} ${VH}`}
+          preserveAspectRatio="none"
           className={`block h-auto w-full cursor-crosshair select-none${a !== null ? " au-active" : ""}`}
+          style={{ touchAction: "pan-y" }}
           role="img"
           aria-labelledby="au-season-title au-season-desc"
           tabIndex={0}
           onPointerMove={(e) => setActive(idxFromClientX(e.clientX))}
-          onPointerDown={(e) => setActive(idxFromClientX(e.clientX))}
-          onPointerLeave={() => setActive(null)}
+          onPointerDown={(e) => {
+            const i = idxFromClientX(e.clientX);
+            const touch = e.pointerType === "touch";
+            setActive((cur) => (touch && cur === i ? null : i));
+          }}
+          onPointerLeave={(e) => {
+            if (e.pointerType !== "touch") setActive(null);
+          }}
           onKeyDown={onKey}
           onBlur={() => setActive(null)}
         >
@@ -217,14 +236,14 @@ export function SeasonChart({
             </linearGradient>
           </defs>
 
-          <path d={`M0 ${Y_TOP} H1120`} fill="none" stroke="#1C1B191A" strokeDasharray="2 4" />
-          <path d={`M0 ${fmt(yAt(midV))} H1120`} fill="none" stroke="#1C1B191A" strokeDasharray="2 4" />
-          <path d={`M0 ${fmt(yAt(lowV))} H1120`} fill="none" stroke="#1C1B191A" strokeDasharray="2 4" />
-          <path d={`M0 ${Y_BASE} H1120`} fill="none" stroke="#1C1B1929" />
+          <path d={`M0 ${Y_TOP} H1120`} fill="none" stroke="#1C1B191A" strokeDasharray="2 4" vectorEffect="non-scaling-stroke" className="au-chart-grid" />
+          <path d={`M0 ${fmt(yAt(midV))} H1120`} fill="none" stroke="#1C1B191A" strokeDasharray="2 4" vectorEffect="non-scaling-stroke" className="au-chart-grid" />
+          <path d={`M0 ${fmt(yAt(lowV))} H1120`} fill="none" stroke="#1C1B191A" strokeDasharray="2 4" vectorEffect="non-scaling-stroke" className="au-chart-grid" />
+          <path d={`M0 ${Y_BASE} H1120`} fill="none" stroke="#1C1B1929" vectorEffect="non-scaling-stroke" />
 
           <path className="au-chart-fill" d={fill} fill="url(#auSeasonFade)" />
-          <path d={`M0 ${fmt(avgY)} H1120`} fill="none" stroke="#4D5B6E8C" strokeDasharray="6 5" />
-          <path d={line(pts)} fill="none" stroke="#4D5B6E73" />
+          <path d={`M0 ${fmt(avgY)} H1120`} fill="none" stroke="#4D5B6E8C" strokeDasharray="6 5" vectorEffect="non-scaling-stroke" className="au-chart-avg" />
+          <path d={line(pts)} fill="none" stroke="#4D5B6E73" vectorEffect="non-scaling-stroke" />
           <path
             className="au-chart-roll"
             d={line(roll)}
@@ -232,6 +251,7 @@ export function SeasonChart({
             stroke="#4D5B6E"
             strokeWidth="2"
             pathLength={1}
+            vectorEffect="non-scaling-stroke"
           />
 
           {startIdx >= 0 && (
@@ -242,6 +262,7 @@ export function SeasonChart({
                 x2={fmt(xAt(startIdx))}
                 y2={Y_BASE}
                 stroke="var(--au-rule-strong)"
+                vectorEffect="non-scaling-stroke"
               />
               <text x={fmt(xAt(startIdx) + 8)} y="161" {...label}>
                 {`YOUR ADS BEGAN · ${monthTag(`${startTag}-01`)}`}
@@ -304,6 +325,7 @@ export function SeasonChart({
                 x2={fmt(aPt.x)}
                 y2={Y_BASE}
                 stroke="#4D5B6E59"
+                vectorEffect="non-scaling-stroke"
               />
               <circle
                 cx={fmt(aPt.x)}

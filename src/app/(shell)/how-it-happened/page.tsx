@@ -206,7 +206,8 @@ export default async function HowItHappenedPage({
             <span>Your results</span>
           </Link>
           <span className={`${KICKER} text-(--au-muted-strong)`}>
-            · Bookings made {spokenRangeWithYear(current.start, current.end)} ·
+            <span className="hidden sm:inline">· </span>
+            Bookings made {spokenRangeWithYear(current.start, current.end)} ·
             Against {spokenRangeWithYear(lastYear.start, lastYear.end)}
           </span>
         </p>
@@ -313,8 +314,8 @@ export default async function HowItHappenedPage({
         </p>
       ) : (
         <div className="flex items-center justify-between flex-wrap w-full mt-[20px] py-[16px] px-[4px] gap-x-[24px] gap-y-[16px] border-t border-b border-solid border-(--au-rule)">
-          <dl className="flex items-center flex-wrap gap-y-[16px]">
-            <div className="flex flex-col pr-[20px] gap-[5px]">
+          <dl className="flex flex-col items-start gap-y-[16px] sm:flex-row sm:items-center sm:flex-wrap">
+            <div className="flex flex-col sm:pr-[20px] gap-[5px]">
               <dt className={`${KICKER} tracking-[0.18em] text-(--au-muted-strong) w-max`}>
                 Times you appeared
               </dt>
@@ -330,8 +331,8 @@ export default async function HowItHappenedPage({
                 dates last year
               </dd>
             </div>
-            <div className="w-px h-[40px] shrink-0 bg-(--au-rule-strong)" aria-hidden="true" />
-            <div className="flex flex-col px-[20px] gap-[5px]">
+            <div className="hidden sm:block w-px h-[40px] shrink-0 bg-(--au-rule-strong)" aria-hidden="true" />
+            <div className="flex flex-col sm:px-[20px] gap-[5px]">
               <dt className={`${KICKER} tracking-[0.18em] text-(--au-muted-strong) w-max`}>
                 Visits from Google
               </dt>
@@ -349,8 +350,8 @@ export default async function HowItHappenedPage({
                   : ""}
               </dd>
             </div>
-            <div className="w-px h-[40px] shrink-0 bg-(--au-rule-strong)" aria-hidden="true" />
-            <div className="flex flex-col pl-[20px] gap-[5px]">
+            <div className="hidden sm:block w-px h-[40px] shrink-0 bg-(--au-rule-strong)" aria-hidden="true" />
+            <div className="flex flex-col sm:pl-[20px] gap-[5px]">
               <dt className={`${KICKER} tracking-[0.18em] text-(--au-muted-strong) w-max`}>
                 Bookings
               </dt>
@@ -377,7 +378,7 @@ export default async function HowItHappenedPage({
           aria-labelledby="ways-head"
           className="flex flex-col w-full xl:w-[548px] shrink-0 rounded-(--au-r-btn) overflow-clip border border-solid border-(--au-rule)"
         >
-          <div className="flex items-baseline justify-between w-full py-[6px] pl-[16px] pr-[8px] gap-[16px]">
+          <div className="flex flex-col items-start gap-y-[2px] py-[8px] sm:flex-row sm:items-baseline sm:justify-between sm:py-[6px] w-full pl-[16px] pr-[8px] gap-x-[16px]">
             <span className="flex items-center gap-[2px]">
               <h2
                 id="ways-head"
@@ -476,7 +477,7 @@ export default async function HowItHappenedPage({
           aria-labelledby="places-head"
           className="flex flex-col grow rounded-(--au-r-btn) overflow-clip border border-solid border-(--au-rule)"
         >
-          <div className="flex items-baseline justify-between w-full py-[6px] pl-[16px] pr-[8px] gap-[16px]">
+          <div className="flex flex-col items-start gap-y-[2px] py-[8px] sm:flex-row sm:items-baseline sm:justify-between sm:py-[6px] w-full pl-[16px] pr-[8px] gap-x-[16px]">
             <span className="flex items-center gap-[2px]">
               <h2
                 id="places-head"

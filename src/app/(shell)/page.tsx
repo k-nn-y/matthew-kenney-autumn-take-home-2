@@ -428,8 +428,8 @@ export default async function ResultsPage({
           {note ? (
             <>
               <div className="flex items-center gap-[12px]">
-                <span className="flex items-center py-[4px] px-[10px] rounded-lamp border border-solid border-(--au-rule-strong)">
-                  <span className={`${KICKER} text-(--au-ink)`}>
+                <span className="flex items-center shrink-0 py-[4px] px-[10px] rounded-lamp border border-solid border-(--au-rule-strong)">
+                  <span className={`${KICKER} whitespace-nowrap text-(--au-ink)`}>
                     {KIND_CHIP[note.kind]}
                   </span>
                 </span>
@@ -466,12 +466,12 @@ export default async function ResultsPage({
             {timelineAll.length > timeline.length ? (
               <Door
                 href={doorTo("/?notes=all")}
-                className="text-[14px] leading-[20px]"
+                className="text-[14px] leading-[20px] whitespace-nowrap shrink-0"
               >
                 All notes
               </Door>
             ) : allNotes ? (
-              <Door href={doorTo("/")} className="text-[14px] leading-[20px]">
+              <Door href={doorTo("/")} className="text-[14px] leading-[20px] whitespace-nowrap shrink-0">
                 The latest three
               </Door>
             ) : null}

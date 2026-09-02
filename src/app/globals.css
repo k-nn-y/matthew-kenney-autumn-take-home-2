@@ -428,9 +428,25 @@ svg#au-season:focus-visible {
   animation: au-route-in 300ms var(--au-ease-out-quart);
 }
 
-/* Phones get the line itself; the annotations return with room to hold them. */
+/* Phones get the line itself; the annotations return with room to hold them.
+   The sheet stretches to a readable height (preserveAspectRatio is "none";
+   every stroke is pinned to hairline weight, so nothing thickens), the dash
+   patterns are re-cut for the narrower scale, and the pointer dots sit out —
+   only the hairline and the readout answer a touch. */
 @media (max-width: 639px) {
   .au-chart-ann {
+    display: none;
+  }
+  #au-season {
+    height: 190px;
+  }
+  #au-season .au-chart-grid {
+    stroke-dasharray: 6 12;
+  }
+  #au-season .au-chart-avg {
+    stroke-dasharray: 18 15;
+  }
+  .au-chart-cross circle {
     display: none;
   }
 }

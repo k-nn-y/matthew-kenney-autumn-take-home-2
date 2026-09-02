@@ -54,7 +54,16 @@ document.addEventListener("toggle",function(e){
   var d=e.target;
   if(!(d instanceof HTMLDetailsElement)||!d.classList.contains("au-info")||!d.open)return;
   var c=d.querySelector(".au-info-card");
-  if(c){c.setAttribute("tabindex","-1");c.focus({preventScroll:true});}
+  if(c){
+    c.style.marginLeft="0px";
+    var r=c.getBoundingClientRect();
+    var vw=document.documentElement.clientWidth;
+    var shift=0;
+    if(r.right>vw-16)shift=vw-16-r.right;
+    if(r.left+shift<16)shift=16-r.left;
+    if(shift)c.style.marginLeft=shift+"px";
+    c.setAttribute("tabindex","-1");c.focus({preventScroll:true});
+  }
 },true);
 `;
 
