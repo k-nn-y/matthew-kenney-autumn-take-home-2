@@ -20,7 +20,7 @@ const ROOMS = [
 ] as const;
 
 const ROW =
-  "flex min-h-[60px] items-center justify-between no-underline text-[22px] leading-[28px] tracking-[-0.018em] border-b border-solid border-b-(--au-rule)";
+  "flex min-h-[56px] items-center rounded-[6px] px-[14px] no-underline text-[22px] leading-[28px] tracking-[-0.018em]";
 
 function Rows({
   onPick,
@@ -31,7 +31,7 @@ function Rows({
 }) {
   const pathname = usePathname();
   return (
-    <nav aria-label="Screens" className="flex flex-col">
+    <nav aria-label="Screens" className="flex flex-col gap-[4px] pt-[16px]">
       {ROOMS.map((room) => {
         const active = pathname === room.href;
         return (
@@ -40,14 +40,13 @@ function Rows({
             href={`${room.href}${suffix}`}
             aria-current={active ? "page" : undefined}
             onClick={onPick}
-            className={`${ROW} ${active ? "text-(--au-ink)" : "text-(--au-body)"}`}
+            className={`${ROW} ${
+              active
+                ? "bg-(--au-ground) border border-solid border-(--au-rule) text-(--au-ink)"
+                : "text-(--au-body)"
+            }`}
           >
-            <span>{room.label}</span>
-            {active ? (
-              <span className="text-[12px] leading-[16px] tracking-[0.14em] font-label uppercase text-(--au-muted-strong)">
-                You are here
-              </span>
-            ) : null}
+            {room.label}
           </Link>
         );
       })}
@@ -136,7 +135,7 @@ export function MobileMenu({
         aria-controls="au-menu"
         onClick={show}
       >
-        <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true" focusable="false">
+        <svg viewBox="0 0 20 20" width="22" height="22" aria-hidden="true" focusable="false">
           <path
             d="M4 7.5h12M4 12.5h12"
             fill="none"
@@ -167,7 +166,7 @@ export function MobileMenu({
               aria-label="Close menu"
               onClick={hide}
             >
-              <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true" focusable="false">
+              <svg viewBox="0 0 20 20" width="22" height="22" aria-hidden="true" focusable="false">
                 <path
                   d="M5.5 5.5l9 9M14.5 5.5l-9 9"
                   fill="none"
@@ -192,10 +191,10 @@ export function MobileMenu({
             <RowsWithPeriod onPick={hide} />
           </Suspense>
 
-          <p className="pt-[28px] pb-[6px] text-[12px] leading-[16px] tracking-[0.18em] font-label uppercase text-(--au-muted-strong)">
+          <p className="pt-[28px] pb-[8px] px-[14px] text-[12px] leading-[16px] tracking-[0.18em] font-label uppercase text-(--au-muted-strong)">
             More
           </p>
-          <nav aria-label="Account" className="flex flex-col">
+          <nav aria-label="Account" className="flex flex-col gap-[4px]">
             <Link href="/how-we-count" onClick={hide} className={`${ROW} text-(--au-body)`}>
               How we count
             </Link>

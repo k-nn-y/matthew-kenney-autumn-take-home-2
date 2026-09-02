@@ -619,7 +619,7 @@ html.au-reveal main#results > * > * > *:nth-child(8) { animation-delay: 930ms; }
 }
 
 /* --------------------------------------------------------------------------
-   Menu below 1024px — one 44px button in the strip; the rail opens as a
+   Menu below 1024px — one 52px button in the strip (a thumb, not a cursor); the rail opens as a
    full sheet in a native dialog (focus held, Escape closes). 140ms in,
    100ms out, opacity and a 4px settle, per the spec.
    -------------------------------------------------------------------------- */
@@ -628,9 +628,9 @@ html.au-reveal main#results > * > * > *:nth-child(8) { animation-delay: 930ms; }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
   background: var(--au-ground);
   border: 1px solid var(--au-rule-strong);
   color: var(--au-ink);
@@ -652,7 +652,7 @@ html.au-reveal main#results > * > * > *:nth-child(8) { animation-delay: 930ms; }
   margin: 0;
   padding: 0;
   border: 0;
-  background: var(--au-ground);
+  background: var(--au-ground-warm);
   color: var(--au-ink);
   overflow-y: auto;
 }
