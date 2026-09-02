@@ -12,7 +12,7 @@ import {
 } from "@/lib/queries";
 import type { Insight } from "@/lib/types";
 import { dollars } from "@/lib/db";
-import { spoken, spokenRange, spokenRangeWithYear } from "@/app/dates";
+import { spoken, spokenRange, spokenRangeWithYear, spokenWithYear } from "@/app/dates";
 import { asWord, asWordCap } from "@/lib/words";
 import { normalizePeriod } from "@/lib/periods";
 import { PeriodPicker } from "@/components/PeriodPicker";
@@ -168,11 +168,35 @@ export default async function ResultsPage({
     (i) => i.kind !== "what_changed" && i.kind !== "what_we_did",
   );
   const lastClear = signal.filter((i) => i.kind === "all_clear").at(-1);
-  const timeline = allNotes
-    ? timelineAll
-    : signal
-        .filter((i) => i.kind !== "all_clear" || i === lastClear)
-        .slice(-3);
+  const timeline = signal
+    .filter((i) => i.kind !== "all_clear" || i === lastClear)
+    .slice(-3);
+
+  /* "All notes" opens beneath the note as its own full-width ledger, newest
+     first and grouped by year, split into two columns on a wide screen so a
+     two-year list is not a single tall strip beside an empty column. The
+     split falls on a row boundary; a column that starts mid-year repeats the
+     year so the reader always knows where they are. */
+  type NoteRow =
+    | { kind: "year"; year: string; cont: boolean }
+    | { kind: "note"; insight: Insight; latest: boolean };
+  const newestFirst = [...timelineAll].reverse();
+  const noteRows: NoteRow[] = [];
+  for (const [i, insight] of newestFirst.entries()) {
+    const year = insight.published_at.slice(0, 4);
+    if (i === 0 || newestFirst[i - 1].published_at.slice(0, 4) !== year) {
+      noteRows.push({ kind: "year", year, cont: false });
+    }
+    noteRows.push({ kind: "note", insight, latest: i === 0 });
+  }
+  const half = Math.ceil(noteRows.length / 2);
+  const noteCols: NoteRow[][] = [noteRows.slice(0, half), noteRows.slice(half)];
+  if (noteCols[1].length && noteCols[1][0].kind === "note") {
+    const y = noteCols[1][0].kind === "note" ? noteCols[1][0].insight.published_at.slice(0, 4) : "";
+    noteCols[1].unshift({ kind: "year", year: y, cont: true });
+  }
+  const noteDate = (iso: string) =>
+    spoken(iso).replace(/(\w+) (\d+)/, (_, m, d) => `${m.slice(0, 3)} ${d}`);
 
   const doorTo = (extra: string) =>
     `${extra}${extra.includes("?") ? "&" : "?"}period=${range}`;
@@ -463,42 +487,98 @@ export default async function ResultsPage({
             <h2 className={`${KICKER} text-(--au-muted-strong)`}>
               {seasonHeading(current.start, current.end)}
             </h2>
-            {timelineAll.length > timeline.length ? (
+            {allNotes ? (
+              <Door href={doorTo("/")} className="text-[14px] leading-[20px] whitespace-nowrap shrink-0">
+                The latest three
+              </Door>
+            ) : timelineAll.length > timeline.length ? (
               <Door
                 href={doorTo("/?notes=all")}
                 className="text-[14px] leading-[20px] whitespace-nowrap shrink-0"
               >
                 All notes
               </Door>
-            ) : allNotes ? (
-              <Door href={doorTo("/")} className="text-[14px] leading-[20px] whitespace-nowrap shrink-0">
-                The latest three
-              </Door>
             ) : null}
           </div>
-          {timeline.map((insight, i) => {
-            const latest = i === timeline.length - 1;
-            return (
-              <div
-                key={insight.insight_id}
-                className={`flex items-start py-[10px] gap-[16px] border-t border-solid border-t-(--au-rule) ${latest ? "border-b border-b-(--au-rule)" : ""}`}
-              >
-                <span
-                  className={`w-[64px] shrink-0 pt-[2px] text-[12px] tracking-[0.14em] leading-[16px] font-label uppercase ${latest ? "text-(--au-ink)" : "text-(--au-muted-strong)"}`}
+          {allNotes ? (
+            <p className="py-[10px] text-[14.5px] leading-[20px] tracking-[-0.01em] text-(--au-body) border-t border-b border-solid border-(--au-rule)">
+              {`All ${timelineAll.length} notes from the last two years are below, newest first.`}
+            </p>
+          ) : (
+            timeline.map((insight, i) => {
+              const latest = i === timeline.length - 1;
+              return (
+                <div
+                  key={insight.insight_id}
+                  className={`flex items-start py-[10px] gap-[16px] border-t border-solid border-t-(--au-rule) ${latest ? "border-b border-b-(--au-rule)" : ""}`}
                 >
-                  {spoken(insight.published_at)
-                    .replace(/(\w+) (\d+)/, (_, m, d) => `${m.slice(0, 3)} ${d}`)}
-                </span>
-                <span
-                  className={`text-[14.5px] leading-[20px] tracking-[-0.01em] ${latest ? "text-(--au-ink)" : "text-(--au-body)"}`}
-                >
-                  {rowText(insight)}
-                </span>
-              </div>
-            );
-          })}
+                  <span
+                    className={`w-[64px] shrink-0 pt-[2px] text-[12px] tracking-[0.14em] leading-[16px] font-label uppercase ${latest ? "text-(--au-ink)" : "text-(--au-muted-strong)"}`}
+                  >
+                    {noteDate(insight.published_at)}
+                  </span>
+                  <span
+                    className={`text-[14.5px] leading-[20px] tracking-[-0.01em] ${latest ? "text-(--au-ink)" : "text-(--au-body)"}`}
+                  >
+                    {rowText(insight)}
+                  </span>
+                </div>
+              );
+            })
+          )}
         </section>
       </div>
+
+      {/* every note: full width, newest first, two columns on a wide screen */}
+      {allNotes && (
+        <section
+          aria-label="Every note from Autumn"
+          className="flex flex-col w-full pt-[20px] mt-[24px] border-t border-solid border-t-(--au-rule)"
+        >
+          <div className="flex items-center justify-between pb-[10px] gap-[16px]">
+            <h2 className={`${KICKER} text-(--au-muted-strong)`}>
+              {`Every note · ${timelineAll.length} since ${timelineAll[0] ? spokenWithYear(timelineAll[0].published_at) : ""}`}
+            </h2>
+            <Door href={doorTo("/")} className="text-[14px] leading-[20px]">
+              The latest three
+            </Door>
+          </div>
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-x-[40px]">
+            {noteCols.map((col, c) => (
+              <div key={c} className="flex flex-col">
+                {col.map((row) =>
+                  row.kind === "year" ? (
+                    <div
+                      key={`y-${row.year}-${c}`}
+                      className={`${row.cont ? "hidden xl:flex" : "flex"} items-center pt-[18px] pb-[6px]`}
+                    >
+                      <span className={`${KICKER} text-(--au-muted-strong)`}>
+                        {row.cont ? `${row.year}, continued` : row.year}
+                      </span>
+                    </div>
+                  ) : (
+                    <div
+                      key={row.insight.insight_id}
+                      className="flex items-start py-[10px] gap-[16px] border-t border-solid border-t-(--au-rule)"
+                    >
+                      <span
+                        className={`w-[64px] shrink-0 pt-[2px] text-[12px] tracking-[0.14em] leading-[16px] font-label uppercase ${row.latest ? "text-(--au-ink)" : "text-(--au-muted-strong)"}`}
+                      >
+                        {noteDate(row.insight.published_at)}
+                      </span>
+                      <span
+                        className={`text-[14.5px] leading-[20px] tracking-[-0.01em] ${row.latest ? "text-(--au-ink)" : "text-(--au-body)"}`}
+                      >
+                        {rowText(row.insight)}
+                      </span>
+                    </div>
+                  ),
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

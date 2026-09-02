@@ -409,10 +409,10 @@ export default async function HowItHappenedPage({
                 <th scope="col" className={`${COL_HEAD} pl-[16px] border-t border-solid border-(--au-rule)`}>
                   How they found you
                 </th>
-                <th scope="col" className={`${COL_HEAD} text-right w-[96px] border-t border-solid border-(--au-rule)`}>
+                <th scope="col" className={`${COL_HEAD} text-right w-[112px] pl-[12px] border-t border-solid border-(--au-rule)`}>
                   Bookings
                 </th>
-                <th scope="col" className={`${COL_HEAD} text-center w-[76px] pr-[16px] border-t border-solid border-(--au-rule)`}>
+                <th scope="col" className={`${COL_HEAD} text-right w-[104px] pl-[16px] pr-[16px] border-t border-solid border-(--au-rule)`}>
                   Value
                 </th>
               </tr>
@@ -433,10 +433,10 @@ export default async function HowItHappenedPage({
                       </span>
                     ) : null}
                   </th>
-                  <td className={`${CELL} text-right`}>
+                  <td className={`${CELL} pl-[12px] text-right align-middle`}>
                     <span className="inline-flex items-center justify-end gap-[8px]">
                       <Bar share={topWay > 0 ? w.bookings / topWay : 0} delay={i * 60} />
-                      <span className="w-[20px] text-right text-[14.5px] leading-[21px] text-(--au-ink)">
+                      <span className="w-[28px] text-right text-[14.5px] leading-[20px] tabular-nums text-(--au-ink)">
                         {w.bookings}
                       </span>
                     </span>
@@ -457,7 +457,7 @@ export default async function HowItHappenedPage({
                 >
                   All four ways, together
                 </th>
-                <td className="py-[10px] text-right text-[14.5px] leading-[21px] text-(--au-ink) border-t border-solid border-(--au-rule-strong)">
+                <td className="py-[10px] pl-[12px] text-right align-middle text-[14.5px] leading-[20px] tabular-nums text-(--au-ink) border-t border-solid border-(--au-rule-strong)">
                   {total}
                 </td>
                 <td className="py-[10px] pr-[16px] text-center text-[13.5px] leading-[21px] text-(--au-ink) border-t border-solid border-(--au-rule-strong)">
@@ -515,10 +515,10 @@ export default async function HowItHappenedPage({
                 <th scope="col" className={`${COL_HEAD} pl-[16px] border-t border-solid border-(--au-rule)`}>
                   Searched from
                 </th>
-                <th scope="col" className={`${COL_HEAD} text-right w-[96px] border-t border-solid border-(--au-rule)`}>
+                <th scope="col" className={`${COL_HEAD} text-right w-[112px] pl-[12px] border-t border-solid border-(--au-rule)`}>
                   Bookings
                 </th>
-                <th scope="col" className={`${COL_HEAD} text-center w-[76px] pr-[16px] border-t border-solid border-(--au-rule)`}>
+                <th scope="col" className={`${COL_HEAD} text-right w-[104px] pl-[16px] pr-[16px] border-t border-solid border-(--au-rule)`}>
                   Value
                 </th>
               </tr>
@@ -544,10 +544,10 @@ export default async function HowItHappenedPage({
                       >
                         {m.market}
                       </th>
-                      <td className={`${CELL} text-right`}>
+                      <td className={`${CELL} pl-[12px] text-right align-middle`}>
                         <span className="inline-flex items-center justify-end gap-[8px]">
                           <Bar share={topPlace > 0 ? m.bookings / topPlace : 0} delay={i * 60} />
-                          <span className="w-[20px] text-right text-[14.5px] leading-[21px] text-(--au-ink)">
+                          <span className="w-[28px] text-right text-[14.5px] leading-[20px] tabular-nums text-(--au-ink)">
                             {m.bookings}
                           </span>
                         </span>
@@ -568,9 +568,9 @@ export default async function HowItHappenedPage({
                         {tail.length} other place{tail.length === 1 ? "" : "s"},{" "}
                         {tailEach}
                       </th>
-                      <td className={`${CELL} text-right`}>
+                      <td className={`${CELL} pl-[12px] text-right align-middle`}>
                         <span className="inline-flex items-center justify-end">
-                          <span className="w-[20px] text-right text-[14.5px] leading-[21px] text-(--au-ink)">
+                          <span className="w-[28px] text-right text-[14.5px] leading-[20px] tabular-nums text-(--au-ink)">
                             {tailBookings}
                           </span>
                         </span>
