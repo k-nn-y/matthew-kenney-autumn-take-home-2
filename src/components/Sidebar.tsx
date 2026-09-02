@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { NavLinks } from "@/components/NavLinks";
+import { MobileMenu } from "@/components/MobileMenu";
 
 /**
  * The rail. One surface in the warm ground, holding the three facts that never
@@ -71,18 +72,17 @@ export function Sidebar({
         </div>
       </header>
 
-      {/* Top strip below 1024px */}
-      <header className="flex flex-wrap items-center gap-x-[16px] gap-y-[8px] bg-(--au-ground-warm) px-[16px] pt-[14px] pb-[8px] lg:hidden">
+      {/* Top strip below 1024px: logo, the inn, and one button that opens the
+          whole rail as a sheet. */}
+      <header className="flex items-center gap-x-[14px] bg-(--au-ground-warm) px-[16px] pt-[12px] pb-[10px] lg:hidden">
         <div className="flex items-center text-(--au-ink)">
           <Logo />
         </div>
-        <div className="text-[14.5px] leading-[20px] tracking-[-0.01em] text-(--au-muted-strong)">
+        <div className="min-w-0 truncate text-[14.5px] leading-[20px] tracking-[-0.01em] text-(--au-muted-strong)">
           {propertyName}
         </div>
-        {/* On a phone the two links take their own full row under the name,
-            flush left with the logo; from 640px they sit at the right. */}
-        <div className="w-full sm:w-auto sm:ml-auto">
-          <NavLinks horizontal />
+        <div className="ml-auto shrink-0">
+          <MobileMenu propertyName={propertyName} town={town} askEmail={askEmail} />
         </div>
       </header>
     </>

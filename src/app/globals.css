@@ -619,6 +619,79 @@ html.au-reveal main#results > * > * > *:nth-child(8) { animation-delay: 930ms; }
 }
 
 /* --------------------------------------------------------------------------
+   Menu below 1024px — one 44px button in the strip; the rail opens as a
+   full sheet in a native dialog (focus held, Escape closes). 140ms in,
+   100ms out, opacity and a 4px settle, per the spec.
+   -------------------------------------------------------------------------- */
+
+.au-menu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: var(--au-ground);
+  border: 1px solid var(--au-rule-strong);
+  color: var(--au-ink);
+  cursor: pointer;
+  transition: background-color var(--au-dur-fast) var(--au-ease-out-quart);
+}
+
+.au-menu-btn:hover {
+  background: var(--au-ground-alt);
+}
+
+.au-menu {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--au-ground);
+  color: var(--au-ink);
+  overflow-y: auto;
+}
+
+.au-menu::backdrop {
+  background: transparent;
+}
+
+.au-menu[open] {
+  animation: au-menu-in 140ms var(--au-ease-out-quart);
+}
+
+.au-menu.au-menu-out {
+  animation: au-menu-out 100ms var(--au-ease-in) forwards;
+}
+
+@keyframes au-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes au-menu-out {
+  to {
+    opacity: 0;
+  }
+}
+
+/* The page behind the sheet holds still. */
+body:has(dialog.au-menu[open]) {
+  overflow: hidden;
+}
+
+/* --------------------------------------------------------------------------
    Reduced motion: everything still, chart pre-drawn.
    -------------------------------------------------------------------------- */
 

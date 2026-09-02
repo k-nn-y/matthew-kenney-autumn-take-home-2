@@ -1,13 +1,13 @@
 import { PROPERTY } from "../../../db/params";
-import { Sidebar, Utilities } from "@/components/Sidebar";
+import { Sidebar } from "@/components/Sidebar";
 import { spokenTown } from "@/lib/owner";
 
 /**
  * The signed-in shell: sticky 216px sidebar on warm ground, the sheet beside
  * it. The property name comes from the same constants that seeded its row,
  * so the shell paints before Neon has woken up and never shifts. Below
- * 1024px the rail becomes a top strip and the utility rows move under the
- * sheet. The signed-out page lives outside this shell on purpose.
+ * 1024px the rail becomes a top strip with one menu button that opens the
+ * whole rail as a sheet. The signed-out page lives outside this shell on purpose.
  */
 export default function ShellLayout({
   children,
@@ -37,10 +37,6 @@ export default function ShellLayout({
             {children}
           </main>
 
-          {/* Below 1024px the rail's utility rows live under the sheet. */}
-          <footer className="px-[24px] pb-[24px] lg:hidden">
-            <Utilities askEmail={askEmail} />
-          </footer>
         </div>
       </div>
     </>

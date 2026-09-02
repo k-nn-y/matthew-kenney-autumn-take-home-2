@@ -41,7 +41,6 @@ export function SeasonHover({
   const root = useRef<HTMLDivElement>(null);
   const tip = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState<number | null>(null);
-  const [pos, setPos] = useState<{ left: number; top: number } | null>(null);
   const [veil, setVeil] = useState(false);
 
   const toIndex = (clientX: number) => {
@@ -68,10 +67,7 @@ export function SeasonHover({
   useLayoutEffect(() => {
     const el = root.current;
     const t = tip.current;
-    if (active === null || !el || !t) {
-      setPos(null);
-      return;
-    }
+    if (active === null || !el || !t) return;
     const r = el.getBoundingClientRect();
     const p = points[active];
     const px = ((p.x - viewBox.x) / viewBox.w) * r.width;
@@ -88,7 +84,9 @@ export function SeasonHover({
       : above >= 0
         ? above
         : Math.min(py + GAP, r.height - h);
-    setPos({ left, top: topPx });
+    t.style.left = `${left}px`;
+    t.style.top = `${topPx}px`;
+    t.style.visibility = "visible";
   }, [active, points, viewBox]);
 
   /* The rolling line draws once per browser session, only when the chart is
@@ -206,7 +204,7 @@ export function SeasonHover({
           ref={tip}
           className="au-chart-tip"
           role="status"
-          style={pos ? { left: pos.left, top: pos.top } : { left: 0, top: 0, visibility: "hidden" }}
+          style={{ left: 0, top: 0, visibility: "hidden" }}
         >
           <span className="au-chart-tip-month">{p.month}</span>
           <span className="au-chart-tip-count">{p.count}</span>
