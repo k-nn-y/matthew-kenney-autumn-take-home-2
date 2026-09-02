@@ -18,6 +18,7 @@ import { normalizePeriod } from "@/lib/periods";
 import { PeriodPicker } from "@/components/PeriodPicker";
 import { Door } from "@/components/Door";
 import { InfoGlyph } from "@/components/InfoGlyph";
+import { CountUp } from "@/components/CountUp";
 import { SeasonChart } from "@/components/SeasonChart";
 
 export const metadata: Metadata = { title: "Your results · Autumn" };
@@ -270,7 +271,11 @@ export default async function ResultsPage({
               </span>
               <span className="pb-[3px] border-b-[2.5px] border-solid border-b-(--au-rule-strong)">
                 <span className="text-[34px] leading-[42px] sm:text-[45px] sm:leading-[50px] tracking-[-0.026em] text-(--au-ink)">
-                  {headline.bookings}{" "}
+                  <CountUp
+                    value={headline.bookings}
+                    text={String(headline.bookings)}
+                    gate="au-nums-results"
+                  />{" "}
                   {headline.bookings === 1 ? "booking" : "bookings"}
                 </span>
               </span>
@@ -280,7 +285,12 @@ export default async function ResultsPage({
                 came through Autumn&rsquo;s ads, worth
               </span>
               <span className="text-[42px] leading-[46px] sm:text-[54px] sm:leading-[54px] tracking-[-0.03em] text-(--au-ink) opsz-32">
-                {dollars(headline.valueCents)}.
+                <CountUp
+                  value={Math.round(headline.valueCents / 100)}
+                  text={dollars(headline.valueCents)}
+                  gate="au-nums-results"
+                />
+                .
               </span>
             </span>
           </h1>

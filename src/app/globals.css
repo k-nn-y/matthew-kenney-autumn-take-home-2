@@ -255,16 +255,19 @@ body {
 }
 
 .au-info[open] .au-info-card {
-  animation: au-info-in 160ms var(--au-ease-out-quart);
+  animation: au-info-in 220ms var(--au-ease-out-quart);
 }
 
+/* The card unfolds downward — a curtain, not a pop. */
 @keyframes au-info-in {
   from {
     opacity: 0;
-    transform: translate(-50%, 4px);
+    clip-path: inset(0 0 78% 0 round 10px);
+    transform: translate(-50%, -6px);
   }
   to {
     opacity: 1;
+    clip-path: inset(0 0 0 0 round 10px);
     transform: translate(-50%, 0);
   }
 }
@@ -341,6 +344,90 @@ svg.au-draw .au-chart-late {
   }
 }
 
+/* First view of a session: a soft white veil slides down off the chart
+   while the line draws, as if the sheet were being written in. */
+.au-chart-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--au-ground) 15%
+  );
+  animation: au-veil 680ms var(--au-ease-out-quart) forwards;
+}
+
+@keyframes au-veil {
+  to {
+    transform: translateY(103%);
+  }
+}
+
+/* Pointing at the chart: the standing annotations step back while the
+   month under the pointer speaks. */
+.au-chart-ann,
+.au-chart-late > circle {
+  transition: opacity 160ms var(--au-ease-out-quart);
+}
+
+svg.au-active .au-chart-ann,
+svg.au-active .au-chart-late > circle {
+  opacity: 0.22;
+}
+
+svg#au-season:focus-visible {
+  outline: 2px solid var(--au-slate-deep);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.au-chart-tip {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  background: var(--au-ground);
+  border: 1px solid var(--au-rule);
+  border-radius: 8px;
+  box-shadow:
+    0 1px 2px rgba(17, 17, 18, 0.05),
+    0 6px 20px rgba(17, 17, 18, 0.1);
+  pointer-events: none;
+  white-space: nowrap;
+  animation: au-route-in 120ms var(--au-ease-out-quart);
+}
+
+.au-chart-tip-month {
+  font-family: var(--au-font-label);
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.1em;
+  color: var(--au-muted-strong);
+}
+
+.au-chart-tip-count {
+  font-size: 15.5px;
+  line-height: 20px;
+  letter-spacing: -0.012em;
+  color: var(--au-ink);
+}
+
+.au-chart-tip-roll {
+  font-size: 12.5px;
+  line-height: 17px;
+  letter-spacing: -0.006em;
+  color: var(--au-muted-strong);
+}
+
+/* A number counting up to itself, fading in as it goes. */
+.au-countup {
+  animation: au-route-in 300ms var(--au-ease-out-quart);
+}
+
 /* Phones get the line itself; the annotations return with room to hold them. */
 @media (max-width: 639px) {
   .au-chart-ann {
@@ -365,11 +452,46 @@ svg.au-draw .au-chart-late {
 }
 
 /* --------------------------------------------------------------------------
-   Ledger expansion — revealed rows arrive as one block, 180ms, opacity only.
+   Ledger expansion — revealed rows arrive as one block, 240ms, settling
+   down into place from a few pixels above.
    -------------------------------------------------------------------------- */
 
 .au-reveal {
-  animation: au-route-in var(--au-dur-base) var(--au-ease-out-quart);
+  animation: au-reveal-in 240ms var(--au-ease-out-quart);
+}
+
+@keyframes au-reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* A detail line that opens under a tapped row: height unfolds, 220ms. */
+.au-drop {
+  display: grid;
+  grid-template-rows: 1fr;
+  animation: au-drop-in 220ms var(--au-ease-out-quart);
+}
+
+.au-drop > div {
+  overflow: hidden;
+  min-height: 0;
+}
+
+@keyframes au-drop-in {
+  from {
+    grid-template-rows: 0fr;
+    opacity: 0;
+  }
+  to {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
 }
 
 /* --------------------------------------------------------------------------

@@ -21,6 +21,7 @@ import { normalizePeriod } from "@/lib/periods";
 import { PeriodPicker } from "@/components/PeriodPicker";
 import { Door } from "@/components/Door";
 import { InfoGlyph } from "@/components/InfoGlyph";
+import { CountUp } from "@/components/CountUp";
 import { LedgerRow } from "@/components/LedgerRow";
 import { channelLong, channelShort, CHANNEL_ORDER } from "@/lib/owner";
 
@@ -229,7 +230,7 @@ export default async function HowItHappenedPage({
           <div className="flex items-end justify-between flex-wrap w-full gap-x-[40px] gap-y-[20px]">
             <h1 id="hero" className="flex items-baseline gap-[18px]">
               <span className="text-[64px] leading-[64px] sm:text-[96px] sm:leading-[92px] tracking-[-0.04em] text-(--au-on-ink) opsz-32">
-                {total}
+                <CountUp value={total} text={String(total)} gate="au-nums-how" />
               </span>
               <span className="text-row tracking-[-0.024em] text-(--au-on-ink)">
                 {total === 1 ? "booking, on its own." : "bookings, one by one."}
@@ -251,7 +252,11 @@ export default async function HowItHappenedPage({
             <div className="flex items-start w-full gap-x-[48px] gap-y-[24px] flex-wrap">
               <div className="flex flex-col w-[240px] sm:w-[280px] shrink-0 gap-[6px]">
                 <p className="text-[44px] leading-[48px] sm:text-[56px] sm:leading-[58px] tracking-[-0.032em] text-(--au-on-ink)">
-                  {split.byName}
+                  <CountUp
+                    value={split.byName}
+                    text={String(split.byName)}
+                    gate="au-nums-how"
+                  />
                 </p>
                 <p className="text-[16px] leading-[23px] tracking-[-0.014em] text-(--au-on-ink)">
                   searched for you by name
@@ -262,7 +267,11 @@ export default async function HowItHappenedPage({
               </div>
               <div className="flex flex-col w-[240px] sm:w-[280px] shrink-0 gap-[6px]">
                 <p className="text-[44px] leading-[48px] sm:text-[56px] sm:leading-[58px] tracking-[-0.032em] text-(--au-on-ink)">
-                  {split.newToYou}
+                  <CountUp
+                    value={split.newToYou}
+                    text={String(split.newToYou)}
+                    gate="au-nums-how"
+                  />
                 </p>
                 <p className="text-[16px] leading-[23px] tracking-[-0.014em] text-(--au-on-ink)">
                   didn&rsquo;t know you yet
@@ -310,7 +319,11 @@ export default async function HowItHappenedPage({
                 Times you appeared
               </dt>
               <dd className="text-[26px] leading-[30px] tracking-[-0.02em] text-(--au-ink) w-max">
-                {journey.appeared.toLocaleString("en-US")}
+                <CountUp
+                  value={journey.appeared}
+                  text={journey.appeared.toLocaleString("en-US")}
+                  gate="au-nums-how"
+                />
               </dd>
               <dd className="text-[12.5px] leading-[17px] tracking-[-0.006em] text-(--au-muted-strong) w-max">
                 {journey.appearedLastYear.toLocaleString("en-US")} the same
@@ -323,7 +336,11 @@ export default async function HowItHappenedPage({
                 Visits from Google
               </dt>
               <dd className="text-[26px] leading-[30px] tracking-[-0.02em] text-(--au-ink) w-max">
-                {journey.visits.toLocaleString("en-US")}
+                <CountUp
+                  value={journey.visits}
+                  text={journey.visits.toLocaleString("en-US")}
+                  gate="au-nums-how"
+                />
               </dd>
               <dd className="text-[12.5px] leading-[17px] tracking-[-0.006em] text-(--au-muted-strong) w-max">
                 {journey.visitsLastYear.toLocaleString("en-US")} last year
@@ -338,7 +355,7 @@ export default async function HowItHappenedPage({
                 Bookings
               </dt>
               <dd className="text-[26px] leading-[30px] tracking-[-0.02em] text-(--au-ink) w-max">
-                {total}
+                <CountUp value={total} text={String(total)} gate="au-nums-how" />
               </dd>
               <dd className="text-[12.5px] leading-[17px] tracking-[-0.006em] text-(--au-muted-strong) w-max">
                 {headline.lastYearBookings} the same dates last year

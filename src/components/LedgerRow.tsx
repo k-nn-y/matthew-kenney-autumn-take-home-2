@@ -5,7 +5,7 @@ import { useId, useState } from "react";
 /**
  * One ledger row. On narrow screens the table keeps Booked, Value and How
  * they found you; the rest sits behind a row tap that opens a plain detail
- * line underneath. The detail appears fully formed — nothing animates.
+ * line underneath, unfolding 220ms out-quart (instant under reduced motion).
  */
 export function LedgerRow({
   booked,
@@ -48,7 +48,7 @@ export function LedgerRow({
               height="12"
               aria-hidden="true"
               focusable="false"
-              className={open ? "rotate-180" : undefined}
+              className={`transition-transform duration-150 ${open ? "rotate-180" : ""}`}
             >
               <path
                 d="M5 7.5l5 5 5-5"
@@ -78,10 +78,16 @@ export function LedgerRow({
       <tr id={detailId} className={open ? "sm:hidden" : "hidden"}>
         <td
           colSpan={3}
-          className="pb-[10px] pl-[16px] pr-[16px] text-[13.5px] leading-[19px] tracking-[-0.008em] text-(--au-muted-strong)"
+          className="pl-[16px] pr-[16px] text-[13.5px] leading-[19px] tracking-[-0.008em] text-(--au-muted-strong)"
         >
-          Arriving {arriving} · {nights} {nights === 1 ? "night" : "nights"} ·
-          from {from}
+          <div className="au-drop">
+            <div>
+              <p className="pb-[10px]">
+                Arriving {arriving} · {nights} {nights === 1 ? "night" : "nights"}{" "}
+                · from {from}
+              </p>
+            </div>
+          </div>
         </td>
       </tr>
     </>
