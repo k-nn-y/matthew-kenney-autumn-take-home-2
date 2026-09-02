@@ -185,13 +185,14 @@ export function SeasonHover({
       )}
       <svg
         viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`}
-        className={`au-chart-guide${p ? " au-on" : ""}`}
+        preserveAspectRatio="none"
+        className={`au-chart-guide au-chart-cross${p ? " au-on" : ""}`}
         aria-hidden="true"
         focusable="false"
       >
         {p && (
           <>
-            <line x1={p.x} y1={top} x2={p.x} y2={baseline} stroke="var(--au-slate-deep)" strokeOpacity="0.55" />
+            <line x1={p.x} y1={top} x2={p.x} y2={baseline} stroke="var(--au-slate-deep)" strokeOpacity="0.55" vectorEffect="non-scaling-stroke" />
             <circle cx={p.x} cy={p.y} r="3.5" fill="#FFFFFF" stroke="var(--au-slate-deep)" strokeWidth="1.5" />
             {p.rollY !== null && (
               <circle cx={p.x} cy={p.rollY} r="4.5" fill="var(--au-slate-deep)" stroke="#FFFFFF" strokeWidth="2" />

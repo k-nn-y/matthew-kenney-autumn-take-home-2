@@ -288,34 +288,33 @@ export default async function ResultsPage({
             </span>
           </h1>
         ) : (
-          <h1 id="verdict" className="flex flex-col gap-[4px]">
-            <span className="flex items-baseline flex-wrap gap-x-[13px]">
-              <span className="text-[34px] leading-[42px] sm:text-[45px] sm:leading-[50px] tracking-[-0.026em] text-(--au-body)">
-                From {rangeStart} to {rangeEnd},
-              </span>
-              <span className="pb-[3px] border-b-[2.5px] border-solid border-b-(--au-rule-strong)">
-                <span className="text-[34px] leading-[42px] sm:text-[45px] sm:leading-[50px] tracking-[-0.026em] text-(--au-ink)">
-                  <CountUp
-                    value={headline.bookings}
-                    text={String(headline.bookings)}
-                    gate="au-nums-results"
-                  />{" "}
-                  {headline.bookings === 1 ? "booking" : "bookings"}
-                </span>
-              </span>
+          <h1
+            id="verdict"
+            className="text-[34px] leading-[42px] sm:text-[45px] sm:leading-[50px] tracking-[-0.026em] max-w-[900px]"
+          >
+            <span className="text-(--au-body)">
+              From {rangeStart} to {rangeEnd},{" "}
             </span>
-            <span className="flex items-baseline flex-wrap gap-x-[13px]">
-              <span className="text-[34px] leading-[42px] sm:text-[45px] sm:leading-[50px] tracking-[-0.026em] text-(--au-body)">
-                came through Autumn&rsquo;s ads, worth
-              </span>
-              <span className="text-[42px] leading-[46px] sm:text-[54px] sm:leading-[54px] tracking-[-0.03em] text-(--au-ink) opsz-32">
-                <CountUp
-                  value={Math.round(headline.valueCents / 100)}
-                  text={dollars(headline.valueCents)}
-                  gate="au-nums-results"
-                />
-                .
-              </span>
+            <span className="inline-block pb-[3px] border-b-[2.5px] border-solid border-b-(--au-rule-strong) text-(--au-ink)">
+              <CountUp
+                value={headline.bookings}
+                text={String(headline.bookings)}
+                gate="au-nums-results"
+              />{" "}
+              {headline.bookings === 1 ? "booking" : "bookings"}
+            </span>
+            <br className="hidden sm:inline" />
+            <span className="text-(--au-body)">
+              {" "}
+              came through Autumn&rsquo;s ads, worth{" "}
+            </span>
+            <span className="text-(--au-ink) sm:text-[54px] sm:leading-[54px] sm:tracking-[-0.03em] sm:opsz-32">
+              <CountUp
+                value={Math.round(headline.valueCents / 100)}
+                text={dollars(headline.valueCents)}
+                gate="au-nums-results"
+              />
+              .
             </span>
           </h1>
         )}
@@ -359,38 +358,40 @@ export default async function ResultsPage({
       </section>
 
       {/* cost row */}
+      {/* On a phone the three figures read as a receipt: label and its note on
+          the left, the amount on the right, one hairline between rows. From
+          640px up they are the frame's four columns. */}
       <section
         aria-label="What it cost"
-        className="grid grid-cols-2 gap-x-[24px] gap-y-[20px] w-full py-[12px] border-t border-solid border-t-(--au-rule) sm:flex sm:items-start sm:justify-between sm:gap-x-[48px] sm:flex-wrap"
+        className="flex flex-col w-full py-[4px] border-t border-solid border-t-(--au-rule) sm:flex-row sm:items-start sm:justify-between sm:gap-x-[48px] sm:flex-wrap sm:py-[12px]"
       >
-        <div className="flex flex-col gap-[8px] sm:w-[200px] sm:shrink-0">
-          <h2 className={`${KICKER} text-(--au-muted-strong)`}>Google ad spend</h2>
-          <p className="text-[33px] leading-[38px] tracking-[-0.024em] text-(--au-ink)">
-            {dollars(cost.adSpendCents)}
-          </p>
-          <p className={STAT_SUB}>Paid by Autumn, never billed to you.</p>
-        </div>
-        <div className="flex flex-col gap-[8px] sm:w-[200px] sm:shrink-0">
-          <h2 className={`${KICKER} text-(--au-muted-strong)`}>
-            Autumn&rsquo;s {feePct}%
-          </h2>
-          <p className="text-[33px] leading-[38px] tracking-[-0.024em] text-(--au-ink)">
-            {dollars(cost.autumnFeeCents)}
-          </p>
-          <p className={STAT_SUB}>
-            {headline.bookings > 0
-              ? `Only on the bookings above · about $${perBooking.toLocaleString("en-US")} per booking.`
-              : `Nothing yet. The ${feePct}% only starts once a booking lands.`}
-          </p>
-        </div>
-        <div className="flex flex-col gap-[8px] sm:w-[200px] sm:shrink-0">
-          <h2 className={`${KICKER} text-(--au-muted-strong)`}>Your total cost</h2>
-          <p className="text-[33px] leading-[38px] tracking-[-0.024em] text-(--au-ink)">
-            {dollars(cost.totalCostCents)}
-          </p>
-          <p className={STAT_SUB}>Nothing fixed, nothing monthly.</p>
-        </div>
-        <div className="flex flex-col items-start min-w-0 gap-[10px] sm:grow sm:basis-[240px]">
+        {(
+          [
+            ["Google ad spend", dollars(cost.adSpendCents), "Paid by Autumn, never billed to you."],
+            [
+              `Autumn’s ${feePct}%`,
+              dollars(cost.autumnFeeCents),
+              headline.bookings > 0
+                ? `Only on the bookings above · about $${perBooking.toLocaleString("en-US")} per booking.`
+                : `Nothing yet. The ${feePct}% only starts once a booking lands.`,
+            ],
+            ["Your total cost", dollars(cost.totalCostCents), "Nothing fixed, nothing monthly."],
+          ] as [string, string, string][]
+        ).map(([labelText, amount, note]) => (
+          <div
+            key={labelText}
+            className="flex items-baseline justify-between gap-[16px] py-[10px] border-b border-solid border-b-(--au-rule) sm:flex-col sm:items-start sm:gap-[8px] sm:py-0 sm:border-0 sm:w-[200px] sm:shrink-0"
+          >
+            <div className="flex flex-col gap-[2px] min-w-0 sm:contents">
+              <h2 className={`${KICKER} text-(--au-muted-strong) sm:order-1`}>{labelText}</h2>
+              <p className={`${STAT_SUB} sm:order-3`}>{note}</p>
+            </div>
+            <p className="shrink-0 text-[22px] leading-[28px] tracking-[-0.02em] text-(--au-ink) tabular-nums sm:text-[33px] sm:leading-[38px] sm:tracking-[-0.024em] sm:order-2">
+              {amount}
+            </p>
+          </div>
+        ))}
+        <div className="flex flex-col items-start min-w-0 gap-[10px] pt-[14px] sm:pt-0 sm:grow sm:basis-[240px]">
           <h2 className={`${KICKER} text-(--au-muted-strong)`}>
             Against the commission
           </h2>

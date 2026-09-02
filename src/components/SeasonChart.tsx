@@ -124,9 +124,13 @@ export function SeasonChart({
   return (
     <div className="relative w-full">
       <div className="relative w-full">
+      {/* preserveAspectRatio "none" lets the phone stylesheet give the chart
+          real height (224px) while the desktop box keeps the frame's ratio;
+          strokes are non-scaling so a stretched box never fattens a line. */}
       <svg
         id="au-season"
         viewBox="-2 -20 1124 186"
+        preserveAspectRatio="none"
         className="block h-auto w-full"
         role="img"
         aria-labelledby="au-season-title au-season-desc"
@@ -144,14 +148,14 @@ export function SeasonChart({
           </linearGradient>
         </defs>
 
-        <path d={`M0 ${Y_TOP} H1120`} fill="none" stroke="#1C1B191A" strokeDasharray="2 4" />
-        <path d={`M0 ${fmt(yAt(midV))} H1120`} fill="none" stroke="#1C1B191A" strokeDasharray="2 4" />
-        <path d={`M0 ${fmt(yAt(lowV))} H1120`} fill="none" stroke="#1C1B191A" strokeDasharray="2 4" />
-        <path d={`M0 ${Y_BASE} H1120`} fill="none" stroke="#1C1B1929" />
+        <path className="au-chart-grid" d={`M0 ${Y_TOP} H1120`} fill="none" stroke="#1C1B191A" strokeDasharray="2 4" vectorEffect="non-scaling-stroke" />
+        <path className="au-chart-grid" d={`M0 ${fmt(yAt(midV))} H1120`} fill="none" stroke="#1C1B191A" strokeDasharray="2 4" vectorEffect="non-scaling-stroke" />
+        <path className="au-chart-grid" d={`M0 ${fmt(yAt(lowV))} H1120`} fill="none" stroke="#1C1B191A" strokeDasharray="2 4" vectorEffect="non-scaling-stroke" />
+        <path d={`M0 ${Y_BASE} H1120`} fill="none" stroke="#1C1B1929" vectorEffect="non-scaling-stroke" />
 
         <path className="au-chart-fill" d={fill} fill="url(#auSeasonFade)" />
-        <path d={`M0 ${fmt(avgY)} H1120`} fill="none" stroke="#4D5B6E8C" strokeDasharray="6 5" />
-        <path d={line(pts)} fill="none" stroke="#4D5B6E99" />
+        <path className="au-chart-avg" d={`M0 ${fmt(avgY)} H1120`} fill="none" stroke="#4D5B6E8C" strokeDasharray="6 5" vectorEffect="non-scaling-stroke" />
+        <path d={line(pts)} fill="none" stroke="#4D5B6E99" vectorEffect="non-scaling-stroke" />
         <path
           className="au-chart-roll"
           d={line(roll)}
@@ -159,6 +163,7 @@ export function SeasonChart({
           stroke="#4D5B6E"
           strokeWidth="2"
           pathLength={1}
+          vectorEffect="non-scaling-stroke"
         />
 
         {startIdx >= 0 && (
@@ -169,6 +174,7 @@ export function SeasonChart({
               x2={fmt(xAt(startIdx))}
               y2={Y_BASE}
               stroke="var(--au-rule-strong)"
+              vectorEffect="non-scaling-stroke"
             />
             <text x={fmt(xAt(startIdx) + 8)} y="161" {...label}>
               {`YOUR ADS BEGAN · ${monthTag(`${startTag}-01`)}`}
@@ -253,26 +259,11 @@ export function SeasonChart({
         </tbody>
       </table>
 
-      {/* Below 640px the chart is the line alone; its labels read as a caption. */}
-      <div className="flex flex-col gap-[2px] pt-[8px] sm:hidden">
-        <span className="font-label text-[12px] leading-[16px] tracking-[0.1em] uppercase text-(--au-muted-strong)">
-          {peakLabel}
-        </span>
-        {startIdx >= 0 && (
-          <span className="font-label text-[12px] leading-[16px] tracking-[0.1em] uppercase text-(--au-muted-strong)">
-            {`Your ads began · ${monthTag(`${startTag}-01`)}`}
-          </span>
-        )}
-        <span className="font-label text-[12px] leading-[16px] tracking-[0.1em] uppercase text-(--au-muted-strong)">
-          {`Your average · ${Math.round(avg)} a month`}
-        </span>
-      </div>
-
       <div className="flex w-full pt-[4px]" aria-hidden="true">
         {caps.map((i, k) => (
           <div
             key={i}
-            className={`${k < caps.length - 1 ? "w-1/4 shrink-0" : ""} ${k === 1 ? "hidden sm:inline-block" : "inline-block"} pl-[6px]`}
+            className={`${k < caps.length - 1 ? "w-1/4 shrink-0" : ""} inline-block pl-[2px] sm:pl-[6px]`}
           >
             <span className="font-label inline-block text-[12px] leading-[16px] tracking-[0.06em] text-(--au-muted-strong)">
               {monthTag(`${series[i].month}-01`)}
@@ -280,6 +271,32 @@ export function SeasonChart({
           </div>
         ))}
       </div>
+
+      {/* Below 640px the chart is the line alone, so what the annotations said
+          on the sheet is read out here as three quiet rows. */}
+      <dl className="flex flex-col mt-[12px] border-t border-solid border-t-(--au-rule) sm:hidden">
+        {[
+          [
+            "Busiest",
+            `${peakIdx.map((i) => monthSpoken(`${series[i].month}-01`)).join(" and ")}, ${max} ${max === 1 ? "booking" : "bookings"}${peakIdx.length > 1 ? " each" : ""}`,
+          ],
+          ...(startIdx >= 0 ? [["Your ads began", monthSpoken(`${startTag}-01`)]] : []),
+          ["Your average", `${Math.round(avg)} a month`],
+          ["Lately", `about ${lately} a month`],
+        ].map(([k, v]) => (
+          <div
+            key={k}
+            className="flex items-baseline justify-between gap-[16px] py-[8px] border-b border-solid border-b-(--au-rule)"
+          >
+            <dt className="shrink-0 text-[12.5px] leading-[17px] tracking-[-0.006em] text-(--au-muted-strong)">
+              {k}
+            </dt>
+            <dd className="text-right text-[13.5px] leading-[17px] tracking-[-0.008em] text-(--au-body) tabular-nums">
+              {v}
+            </dd>
+          </div>
+        ))}
+      </dl>
     </div>
   );
 }

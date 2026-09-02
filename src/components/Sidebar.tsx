@@ -79,7 +79,9 @@ export function Sidebar({
         <div className="text-[14.5px] leading-[20px] tracking-[-0.01em] text-(--au-muted-strong)">
           {propertyName}
         </div>
-        <div className="ml-auto">
+        {/* On a phone the two links take their own full row under the name,
+            flush left with the logo; from 640px they sit at the right. */}
+        <div className="w-full sm:w-auto sm:ml-auto">
           <NavLinks horizontal />
         </div>
       </header>
