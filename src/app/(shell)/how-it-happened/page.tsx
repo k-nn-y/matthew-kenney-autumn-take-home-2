@@ -661,11 +661,13 @@ export default async function HowItHappenedPage({
               )}
             </tbody>
           </table>
-          <p className="w-full pt-[14px] pb-[16px] px-[16px] text-[13.5px] leading-[19px] tracking-[-0.006em] text-(--au-body) max-w-[760px] bg-(--au-ground-alt) border-t border-solid border-t-(--au-rule)">
-            Every row carries the two dates you can look up in your own booking
-            system, the day it was booked and the day the guest arrives, plus
-            the ad the guest clicked before booking.
-          </p>
+          <div className="w-full pt-[14px] pb-[16px] px-[16px] bg-(--au-ground-alt) border-t border-solid border-t-(--au-rule)">
+            <p className="max-w-[760px] text-[13.5px] leading-[19px] tracking-[-0.006em] text-(--au-body)">
+              Every row carries the two dates you can look up in your own booking
+              system, the day it was booked and the day the guest arrives, plus
+              the ad the guest clicked before booking.
+            </p>
+          </div>
         </div>
       </section>
 
