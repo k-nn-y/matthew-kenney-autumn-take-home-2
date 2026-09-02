@@ -1,0 +1,375 @@
+/* Screen 2 — the proof sheet. Same surface model as screen 1: one white
+   sheet, hairline-ruled sections, one slate emphasis. A reading surface,
+   allowed to run long.
+
+   Small and label text uses the one muted-ink token (--au-muted); body-size
+   prose uses --au-body; answers take full ink. */
+
+.sheet {
+  margin-bottom: 4px;
+}
+
+.back {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  color: var(--au-body);
+  font-size: var(--au-t-caption);
+  font-weight: 500;
+  line-height: 22px;
+  letter-spacing: -0.01em;
+  transition: color 100ms ease-out;
+}
+
+.backLink:hover { color: var(--au-ink); }
+
+.backLabel { color: var(--au-muted); }
+
+/* --- the reconciliation --------------------------------------------------- */
+
+.recon {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding-block: 2px 20px;
+}
+
+.title {
+  font-variation-settings: "opsz" 32;
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1.18;
+  letter-spacing: -0.024em;
+  color: var(--au-ink);
+}
+
+.title data { font-variant-numeric: tabular-nums; }
+
+/* This sheet's one emphasis treatment. */
+.chip {
+  padding: 6px 12px;
+  background: var(--au-slate-tint);
+  border-radius: var(--au-r-btn);
+  color: var(--au-slate-deep);
+  font-size: var(--au-t-caption);
+  font-weight: 500;
+  line-height: 21px;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- section furniture ---------------------------------------------------- */
+
+.h2 {
+  color: var(--au-muted);
+  padding-bottom: 14px;
+}
+
+.h2Flat {
+  color: var(--au-muted);
+}
+
+.sectHead {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 24px;
+  padding-bottom: 14px;
+}
+
+/* Captions what the bars encode — one line per ranked list. */
+.barKey {
+  color: var(--au-muted);
+  font-size: var(--au-t-caption);
+  line-height: 21px;
+  letter-spacing: -0.01em;
+}
+
+.lead {
+  color: var(--au-body);
+  font-size: var(--au-t-body);
+  line-height: 25px;
+  letter-spacing: -0.016em;
+  max-width: 76ch;
+}
+
+.lead strong { color: var(--au-ink); font-weight: 500; }
+
+.note,
+.footnote {
+  color: var(--au-muted);
+  font-size: var(--au-t-caption);
+  line-height: 22px;
+  letter-spacing: -0.01em;
+  max-width: 76ch;
+}
+
+/* --- the honest split ----------------------------------------------------- */
+
+.splitBar {
+  display: flex;
+  gap: 3px;
+  height: 10px;
+  margin-block: 14px 18px;
+}
+
+/* Proportion carried by ink strength, never by two hues. */
+.splitByName { background: var(--au-ink); opacity: 0.26; border-radius: 2px; }
+.splitNew { background: var(--au-ink); opacity: 0.86; border-radius: 2px; }
+
+.splitLegend {
+  display: grid;
+  gap: 18px;
+}
+
+.splitWhy {
+  color: var(--au-muted);
+  font-size: var(--au-t-caption);
+  line-height: 21px;
+  letter-spacing: -0.01em;
+  max-width: 40ch;
+}
+
+/* --- ranked lists (channels and markets share one anatomy) ---------------- */
+
+.rank {
+  display: flex;
+  flex-direction: column;
+}
+
+.rankRow {
+  display: grid;
+  grid-template-columns: 1fr 48px 84px;
+  grid-template-areas: "name count value" "bar bar bar";
+  align-items: center;
+  gap: 6px 12px;
+  padding-block: 11px;
+  border-top: 1px solid var(--au-rule);
+}
+
+.rankName { grid-area: name; color: var(--au-ink); font-size: var(--au-t-body); line-height: 23px; letter-spacing: -0.014em; }
+.rankCount { grid-area: count; text-align: right; color: var(--au-ink); font-size: var(--au-t-body); }
+.rankValue { grid-area: value; text-align: right; color: var(--au-muted); font-size: var(--au-t-caption); }
+
+.rankBar {
+  grid-area: bar;
+  display: block;
+  height: 4px;
+  background: var(--au-rule);
+  border-radius: 2px;
+}
+
+.rankBar > span {
+  display: block;
+  height: 100%;
+  background: var(--au-ink);
+  opacity: 0.55;
+  border-radius: 2px;
+}
+
+.rankFoot {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--au-rule);
+}
+
+.deeper { width: 100%; }
+.deeper > summary { margin-left: auto; }
+
+/* --- tables --------------------------------------------------------------- */
+
+.scroll { overflow-x: auto; }
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--au-t-caption);
+}
+
+.table th,
+.table td {
+  padding: 10px 10px 10px 0;
+  text-align: left;
+  border-top: 1px solid var(--au-rule);
+  white-space: nowrap;
+}
+
+.table thead th {
+  border-top: 0;
+  border-bottom: 1px solid var(--au-rule-strong);
+  font-family: var(--au-font-label);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--au-muted);
+}
+
+.table td { color: var(--au-body); font-variant-numeric: tabular-nums; }
+.rowHead { font-weight: 500; color: var(--au-ink); white-space: normal; }
+.numCol { text-align: right; font-variant-numeric: tabular-nums; }
+.table th.numCol { text-align: right; }
+.table .fromCol { padding-left: 44px; }
+
+.ledgerFoot {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 12px;
+  border-top: 1px solid var(--au-rule);
+}
+
+.ledgerCount {
+  color: var(--au-body);
+  font-size: var(--au-t-caption);
+  font-weight: 500;
+  line-height: 22px;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.ledgerLink {
+  color: var(--au-ink);
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.16em;
+  text-decoration-color: var(--au-rule-strong);
+}
+
+.ledgerLink:hover { text-decoration-color: var(--au-ink); }
+
+/* --- journey -------------------------------------------------------------- */
+
+.journeyRow {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.figures {
+  display: grid;
+  gap: 18px;
+}
+
+.journeyNote {
+  color: var(--au-muted);
+  font-size: var(--au-t-caption);
+  line-height: 21px;
+  letter-spacing: -0.01em;
+  max-width: 44ch;
+}
+
+.journeyNote strong { color: var(--au-ink); font-weight: 500; }
+
+.method {
+  padding-top: 14px;
+  color: var(--au-muted);
+  font-size: var(--au-t-caption);
+  line-height: 22px;
+  letter-spacing: -0.01em;
+  max-width: 88ch;
+}
+
+/* --- occupancy + closing -------------------------------------------------- */
+
+.closingRow {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-bottom: 4px;
+}
+
+.occ {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 640px;
+}
+
+.closing {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  max-width: 430px;
+}
+
+.closingText {
+  color: var(--au-muted);
+  font-size: var(--au-t-caption);
+  line-height: 21px;
+  letter-spacing: -0.01em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backLink { transition: none; }
+}
+
+@media (min-width: 900px) {
+  .title { font-size: 38px; letter-spacing: -0.025em; }
+  .recon { padding-block: 4px 24px; }
+
+  .splitLegend { grid-template-columns: auto auto 1fr; gap: 64px; align-items: start; }
+  .splitWhy { justify-self: end; text-align: right; }
+
+  .rankRow {
+    grid-template-columns: 300px 1fr 56px 96px;
+    grid-template-areas: "name bar count value";
+    gap: 20px;
+  }
+
+  .rankFoot {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px 32px;
+  }
+
+  .rankFoot .note { max-width: 56ch; }
+  .deeper { width: auto; flex-shrink: 0; }
+  .deeper[open] { width: 100%; }
+
+  .journeyRow {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 48px;
+  }
+
+  .figures { grid-template-columns: repeat(3, auto); gap: 64px; }
+  .journeyNote { text-align: right; }
+
+  .ledgerFoot {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 32px;
+  }
+
+  .closingRow {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 64px;
+  }
+
+  .closing { align-items: flex-end; }
+  .closingText { text-align: right; }
+
+  .table { font-size: var(--au-t-caption); }
+}

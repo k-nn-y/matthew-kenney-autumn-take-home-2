@@ -1,0 +1,30 @@
+/* Autumn dashboard tokens as used on the Stage D Paper frames (2026-09-02). Source of truth for the build. */
+:root {
+  --au-ground: #FFFFFF;          /* sheet */
+  --au-ground-alt: #F5F5F5;      /* table lane headers, panel footnotes, skeleton blocks */
+  --au-ground-warm: #F2F2F0;     /* page canvas and sidebar */
+  --au-ink: #111112;             /* primary text, ink cards */
+  --au-ink-ground: #111112;      /* ink card background */
+  --au-ink-2: #1C1B19;           /* button hover */
+  --au-body: #4A4945;            /* body text, secondary labels */
+  --au-muted: #6E6C66;           /* chevron and ⓘ glyph strokes only; text uses --au-muted-strong */
+  --au-muted-strong: #5F5D57;    /* dashboard muted text, ~6.3:1 on white */
+  --au-on-ink: #FBFBFA;
+  --au-on-ink-muted: #A8A69E;
+  --au-slate: #6F7E92;
+  --au-slate-deep: #4D5B6E;      /* chart line, bars, comparison text */
+  --au-slate-tint: #ECEFF3;      /* bar tracks, comparison pill */
+  --au-slate-line: #D6DCE4;
+  --au-rule: rgb(28 27 25 / 10%);
+  --au-rule-strong: rgb(28 27 25 / 16%);
+  --au-rule-on-ink: rgb(251 251 250 / 16%);
+  --au-r-btn: 6px;
+  --au-r-card: 20px;
+  --au-font: "Inter", system-ui, sans-serif;        /* weight 500 everywhere; opsz 32 on display sizes */
+  --au-font-label: "Geist", system-ui, sans-serif;  /* weight 400, uppercase, 12px, tracking 0.14–0.18em */
+  --au-ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --au-ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --au-ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --au-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --au-dur-fast: 120ms; --au-dur-base: 180ms; --au-dur-redraw: 400ms; --au-dur-draw-once: 600ms;
+}

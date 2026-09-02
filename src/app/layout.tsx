@@ -1,17 +1,14 @@
 import type { Metadata } from "next";
 import { Geist, Inter } from "next/font/google";
-import { PROPERTY } from "../../db/params";
-import { AppHeader } from "@/components/AppHeader";
+import Script from "next/script";
 import "./globals.css";
-import styles from "./layout.module.css";
 
 /**
  * Two families, both Autumn's own: Inter for everything readable, Geist 400
  * for the letterspaced label tier. Inter is loaded variable and carries its
- * optical-size axis, because globals.css sets `font-variation-settings:
- * "opsz" 32` on the display tiers; next/font only honours `axes` when the
- * weight is left variable (see get-font-axes.js), so the single weight this
- * design uses — 500 — is applied in CSS on `body` rather than at load.
+ * optical-size axis, because the display tiers set `font-variation-settings:
+ * "opsz" 32`; next/font only honours `axes` when the weight is left variable,
+ * so the single weight this design uses — 500 — is applied in CSS on `body`.
  */
 const inter = Inter({
   variable: "--font-inter",
@@ -37,38 +34,49 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-/* Next 16's generated `LayoutProps<"/">` is written into .next/types, which
-   means it only exists after a build — and .next is not committed. Typing the
-   one prop this layout takes keeps `tsc --noEmit` honest on a fresh clone. */
+/* The five ⓘ glyphs are native <details>; this closes an open one on Escape
+   (returning focus to its glyph) or on a click anywhere else. */
+const INFO_SCRIPT = `
+document.addEventListener("keydown",function(e){
+  if(e.key!=="Escape")return;
+  var d=document.querySelector("details.au-info[open]");
+  if(!d)return;
+  d.removeAttribute("open");
+  var s=d.querySelector("summary");
+  if(s)s.focus();
+});
+document.addEventListener("click",function(e){
+  document.querySelectorAll("details.au-info[open]").forEach(function(d){
+    if(!d.contains(e.target))d.removeAttribute("open");
+  });
+});
+document.addEventListener("toggle",function(e){
+  var d=e.target;
+  if(!(d instanceof HTMLDetailsElement)||!d.classList.contains("au-info")||!d.open)return;
+  var c=d.querySelector(".au-info-card");
+  if(c){c.setAttribute("tabindex","-1");c.focus({preventScroll:true});}
+},true);
+`;
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    /* data-scroll-behavior tells Next to suspend the smooth scrolling that
-       globals.css sets during route transitions, so moving between the two
-       screens lands at the top instantly instead of animating there. */
+    /* data-scroll-behavior tells Next to suspend smooth scrolling during route
+       transitions, so moving between the two screens lands at the top
+       instantly instead of animating there. */
     <html
       lang="en"
       data-scroll-behavior="smooth"
       className={`${inter.variable} ${geist.variable}`}
     >
       <body>
-        <a href="#results" className={styles.skip}>
-          Skip to the numbers
-        </a>
-
-        <div className={styles.app}>
-          {/* The property name comes from the same constants that seeded its
-              row, so the shell can paint before Neon has woken up. Nothing
-              above the fold should wait on a database that scales to zero. */}
-          <AppHeader propertyName={PROPERTY.name} town={PROPERTY.town} />
-
-          <main id="results" className={styles.main}>
-            {children}
-          </main>
-        </div>
+        {children}
+        <Script id="au-info" strategy="afterInteractive">
+          {INFO_SCRIPT}
+        </Script>
       </body>
     </html>
   );

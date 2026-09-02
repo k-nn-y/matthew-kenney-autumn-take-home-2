@@ -528,7 +528,6 @@ function generate(bookSeed: number, marketSeed: number): World {
     const month = monthlyClicks.get(mm.key);
     if (!month) continue;
     const { active } = month;
-    const gross = autumnByMonth.get(mm.key) ?? 0;
     const clicksByCat = active.map((c) => Math.max(1, Math.round(month.perCat.get(c)!)));
 
     const monthRows: AdRow[] = [];
@@ -674,21 +673,6 @@ function analyse(w: World): Analysis {
    Everything else — band tightness, which channel absorbs the June dip,
    byte-identical reruns — is cosmetic. It is logged as a TODO and does not
    stop the seed. Chasing those was costing more than the realism it bought. */
-const HARD_ASSERTS: RegExp[] = [
-  /best revenue stay-month/,
-  /best occupancy stay-month/,
-  /outside seasonal band/,
-  /mean full-programme month/,
-  /above the plausibility ceiling/,
-  /Autumn share of direct revenue/,
-];
-const isHard = (msg: string) => HARD_ASSERTS.some((r) => r.test(msg));
-const splitFails = (all: string[]) => ({
-  hard: all.filter(isHard),
-  soft: all.filter((m) => !isHard(m)),
-});
-let SOFT_TODOS: string[] = [];
-
 /* ── hard asserts. Fail loudly rather than emit implausible data. ─────────── */
 
 const COMPLETE_STAY_MONTHS = monthRange(P.WINDOW.firstStayMonth, P.WINDOW.lastStayMonth).map((x) => x.key);
