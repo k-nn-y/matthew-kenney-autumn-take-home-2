@@ -57,3 +57,5 @@ Implementation tokens (for Prompt 9):
 - --au-ease-in: cubic-bezier(0.4, 0, 1, 1)
 - --au-dur-fast: 120ms · --au-dur-base: 180ms · --au-dur-redraw: 400ms · --au-dur-draw-once: 600ms
 - Chart draw runs once per browser session (sessionStorage flag), only when the sheet is in view
+
+Second revision, same rules: on the first page of a session only, the sheet writes itself in — the rail first, then each block in reading order, deliberate at the top and gathering pace down the sheet (delays 120/340/520/660/770/850/900/930/940ms, each block a 440ms out-quart fade from 8px above). The class gating it is set before first paint and removed at 2s, so in-session navigations render plainly. The proportion bars on the second screen grow rightward to their length (scaleX, 680ms out-quint, rows staggered 60ms), once per screen per session, server-rendered at full length for no-JS and reduced motion. Both collapse to instant under reduced motion.

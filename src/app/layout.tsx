@@ -34,6 +34,21 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+/* First page of a session only: the sheet writes itself in — the rail first,
+   then each block in reading order, opening deliberately and gathering pace.
+   Runs before first paint so nothing flashes; the class comes off once the
+   cascade is done so later in-session navigations render plainly. */
+const REVEAL_SCRIPT = `
+(function(){try{
+if(window.matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+if(sessionStorage.getItem("au-reveal"))return;
+sessionStorage.setItem("au-reveal","1");
+var d=document.documentElement;
+d.classList.add("au-reveal");
+setTimeout(function(){d.classList.remove("au-reveal")},2000);
+}catch(e){}})();
+`;
+
 /* The five ⓘ glyphs are native <details>; this closes an open one on Escape
    (returning focus to its glyph) or on a click anywhere else. */
 const INFO_SCRIPT = `
@@ -82,6 +97,7 @@ export default function RootLayout({
       className={`${inter.variable} ${geist.variable}`}
     >
       <body>
+        <script dangerouslySetInnerHTML={{ __html: REVEAL_SCRIPT }} />
         {children}
         <Script id="au-info" strategy="afterInteractive">
           {INFO_SCRIPT}

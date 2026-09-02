@@ -327,9 +327,9 @@ export default async function ResultsPage({
           <p className="text-[14.5px] tracking-[-0.01em] leading-caption max-w-[680px] pt-[2px] text-(--au-slate-deep)">
             {notReported
               ? house.bookings > 0
-                ? `Your inn took ${house.bookings} direct booking${house.bookings === 1 ? "" : "s"} so far in these dates, worth ${dollars(house.valueCents)}. None came through the ads yet, which is ordinary in the first days of a window.`
+                ? `Your inn took ${house.bookings.toLocaleString("en-US")} direct booking${house.bookings === 1 ? "" : "s"} so far in these dates, worth ${dollars(house.valueCents)}. None came through the ads yet, which is ordinary in the first days of a window.`
                 : "Your inn's other bookings will appear here as they are reported."
-              : `Your inn took ${house.bookings} direct bookings in these dates, worth ${dollars(house.valueCents)}. These ${headline.bookings} are the ones our ads brought; the other ${house.bookings - headline.bookings} were already yours.`}
+              : `Your inn took ${house.bookings.toLocaleString("en-US")} direct bookings in these dates, worth ${dollars(house.valueCents)}. These ${headline.bookings} are the ones our ads brought; the other ${(house.bookings - headline.bookings).toLocaleString("en-US")} were already yours.`}
           </p>
         )}
       </section>

@@ -200,7 +200,9 @@ export function SeasonChart({
 
   return (
     <div className="relative w-full">
-      <div className="relative w-full overflow-hidden">
+      {/* Clipped only while the veil slides through; afterwards the readout
+          may stand above the drawn box without being cut off. */}
+      <div className={`relative w-full${veil ? " overflow-hidden" : ""}`}>
         <svg
           ref={svgRef}
           id="au-season"

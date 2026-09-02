@@ -377,6 +377,12 @@ svg.au-active .au-chart-late > circle {
   opacity: 0.22;
 }
 
+/* A finger's tap must not summon the browser's own amber ring; the slate
+   ring below still answers the keyboard. */
+svg#au-season:focus {
+  outline: none;
+}
+
 svg#au-season:focus-visible {
   outline: 2px solid var(--au-slate-deep);
   outline-offset: 2px;
@@ -438,7 +444,7 @@ svg#au-season:focus-visible {
     display: none;
   }
   #au-season {
-    height: 190px;
+    height: 224px;
   }
   #au-season .au-chart-grid {
     stroke-dasharray: 6 12;
@@ -448,6 +454,55 @@ svg#au-season:focus-visible {
   }
   .au-chart-cross circle {
     display: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   First page of a session: the sheet writes itself in. The rail arrives
+   first, then each block in reading order — deliberate at the top, gathering
+   pace down the sheet, the way a page fills once it knows what it is saying.
+   The html class is added before first paint and removed two seconds later,
+   so later navigations this session render plainly.
+   -------------------------------------------------------------------------- */
+
+html.au-reveal body header {
+  animation: au-reveal-in 400ms var(--au-ease-out-quart) both;
+}
+
+html.au-reveal main#results > * > * > * {
+  animation: au-reveal-in 440ms var(--au-ease-out-quart) both;
+  animation-delay: 940ms; /* ninth block on, arriving together */
+}
+
+html.au-reveal main#results > * > * > *:nth-child(1) { animation-delay: 120ms; }
+html.au-reveal main#results > * > * > *:nth-child(2) { animation-delay: 340ms; }
+html.au-reveal main#results > * > * > *:nth-child(3) { animation-delay: 520ms; }
+html.au-reveal main#results > * > * > *:nth-child(4) { animation-delay: 660ms; }
+html.au-reveal main#results > * > * > *:nth-child(5) { animation-delay: 770ms; }
+html.au-reveal main#results > * > * > *:nth-child(6) { animation-delay: 850ms; }
+html.au-reveal main#results > * > * > *:nth-child(7) { animation-delay: 900ms; }
+html.au-reveal main#results > * > * > *:nth-child(8) { animation-delay: 930ms; }
+
+@keyframes au-reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* A bar meter growing to its length, once per screen per session. */
+.au-grow {
+  transform-origin: 0 50%;
+  animation: au-grow 680ms var(--au-ease-out-quint) both;
+}
+
+@keyframes au-grow {
+  from {
+    transform: scaleX(0);
   }
 }
 

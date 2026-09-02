@@ -22,6 +22,7 @@ import { PeriodPicker } from "@/components/PeriodPicker";
 import { Door } from "@/components/Door";
 import { InfoGlyph } from "@/components/InfoGlyph";
 import { CountUp } from "@/components/CountUp";
+import { Grow } from "@/components/Grow";
 import { LedgerRow } from "@/components/LedgerRow";
 import { channelLong, channelShort, CHANNEL_ORDER } from "@/lib/owner";
 
@@ -50,14 +51,16 @@ function reportedDays(
 }
 
 /** The little slate proportion track every panel row carries. */
-function Bar({ share }: { share: number }) {
+function Bar({ share, delay = 0 }: { share: number; delay?: number }) {
   return (
     <span className="inline-flex w-[56px] h-[4px] rounded-[2px] shrink-0 bg-(--au-slate-tint)">
       {share > 0 ? (
-        <span
-          className="h-[4px] rounded-[2px] bg-(--au-slate-deep)"
-          style={{ width: `${Math.max(4, Math.round(share * 100))}%` }}
-        />
+        <Grow gate="au-bars-how" delay={delay} className="inline-flex w-full h-[4px]">
+          <span
+            className="h-[4px] rounded-[2px] bg-(--au-slate-deep)"
+            style={{ width: `${Math.max(4, Math.round(share * 100))}%` }}
+          />
+        </Grow>
       ) : null}
     </span>
   );
@@ -229,7 +232,7 @@ export default async function HowItHappenedPage({
           </h1>
         ) : (
           <div className="flex items-end justify-between flex-wrap w-full gap-x-[40px] gap-y-[20px]">
-            <h1 id="hero" className="flex items-baseline gap-[18px]">
+            <h1 id="hero" className="flex items-end sm:items-baseline gap-[18px]">
               <span className="text-[64px] leading-[64px] sm:text-[96px] sm:leading-[92px] tracking-[-0.04em] text-(--au-on-ink) opsz-32">
                 <CountUp value={total} text={String(total)} gate="au-nums-how" />
               </span>
@@ -240,7 +243,7 @@ export default async function HowItHappenedPage({
             <p className="text-[14.5px] leading-[22px] tracking-[-0.01em] max-w-[360px] sm:text-right text-(--au-on-ink-muted)">
               {total === 0
                 ? "No bookings have been confirmed in these dates yet. Google confirms a booking a few days after it is made, so the last few days are still filling in."
-                : `Your inn took ${house.bookings} direct bookings in these dates. These ${total} came through our ads, worth ${dollars(headline.valueCents)}, and the four ways, the ${asWord(markets.length)} place${markets.length === 1 ? "" : "s"} and the ledger below all add back up to them.`}
+                : `Your inn took ${house.bookings.toLocaleString("en-US")} direct bookings in these dates. These ${total} came through our ads, worth ${dollars(headline.valueCents)}, and the four ways, the ${asWord(markets.length)} place${markets.length === 1 ? "" : "s"} and the ledger below all add back up to them.`}
             </p>
           </div>
         )}
@@ -282,17 +285,17 @@ export default async function HowItHappenedPage({
                 </p>
               </div>
               <div className="flex flex-col grow basis-[280px] min-w-[250px] pt-[8px] gap-[14px]">
-                <div className="flex w-full h-[10px] gap-[3px] shrink-0" aria-hidden="true">
+                <div className="flex w-full h-[10px] shrink-0" aria-hidden="true">
                   {splitTotal > 0 ? (
-                    <>
-                      <div
+                    <Grow gate="au-bars-how" className="flex w-full h-[10px] gap-[3px]">
+                      <span
                         className="h-[10px] opacity-[0.45] rounded-[2px] bg-(--au-on-ink)"
                         style={{ width: `${Math.round(byNameShare * 1000) / 10}%` }}
                       />
-                      <div className="grow h-[10px] rounded-[2px] bg-(--au-on-ink)" />
-                    </>
+                      <span className="grow h-[10px] rounded-[2px] bg-(--au-on-ink)" />
+                    </Grow>
                   ) : (
-                    <div className="grow h-[10px] opacity-[0.2] rounded-[2px] bg-(--au-on-ink)" />
+                    <span className="grow h-[10px] opacity-[0.2] rounded-[2px] bg-(--au-on-ink)" />
                   )}
                 </div>
                 <p className="text-[14.5px] leading-[22px] tracking-[-0.01em] max-w-[46ch] text-(--au-on-ink-muted)">
@@ -409,13 +412,13 @@ export default async function HowItHappenedPage({
                 <th scope="col" className={`${COL_HEAD} text-right w-[96px] border-t border-solid border-(--au-rule)`}>
                   Bookings
                 </th>
-                <th scope="col" className={`${COL_HEAD} text-right w-[76px] pr-[16px] border-t border-solid border-(--au-rule)`}>
+                <th scope="col" className={`${COL_HEAD} text-center w-[76px] pr-[16px] border-t border-solid border-(--au-rule)`}>
                   Value
                 </th>
               </tr>
             </thead>
             <tbody>
-              {ways.map((w) => (
+              {ways.map((w, i) => (
                 <tr key={w.category}>
                   <th
                     scope="row"
@@ -432,14 +435,14 @@ export default async function HowItHappenedPage({
                   </th>
                   <td className={`${CELL} text-right`}>
                     <span className="inline-flex items-center justify-end gap-[8px]">
-                      <Bar share={topWay > 0 ? w.bookings / topWay : 0} />
+                      <Bar share={topWay > 0 ? w.bookings / topWay : 0} delay={i * 60} />
                       <span className="w-[20px] text-right text-[14.5px] leading-[21px] text-(--au-ink)">
                         {w.bookings}
                       </span>
                     </span>
                   </td>
                   <td
-                    className={`${CELL} pr-[16px] text-right text-[13.5px] leading-[20px] text-(--au-muted-strong)`}
+                    className={`${CELL} pr-[16px] text-center text-[13.5px] leading-[21px] text-(--au-muted-strong)`}
                   >
                     {dollars(w.valueCents)}
                   </td>
@@ -457,7 +460,7 @@ export default async function HowItHappenedPage({
                 <td className="py-[10px] text-right text-[14.5px] leading-[21px] text-(--au-ink) border-t border-solid border-(--au-rule-strong)">
                   {total}
                 </td>
-                <td className="py-[10px] pr-[16px] text-right text-[13.5px] leading-[20px] text-(--au-ink) border-t border-solid border-(--au-rule-strong)">
+                <td className="py-[10px] pr-[16px] text-center text-[13.5px] leading-[21px] text-(--au-ink) border-t border-solid border-(--au-rule-strong)">
                   {dollars(headline.valueCents)}
                 </td>
               </tr>
@@ -515,7 +518,7 @@ export default async function HowItHappenedPage({
                 <th scope="col" className={`${COL_HEAD} text-right w-[96px] border-t border-solid border-(--au-rule)`}>
                   Bookings
                 </th>
-                <th scope="col" className={`${COL_HEAD} text-right w-[76px] pr-[16px] border-t border-solid border-(--au-rule)`}>
+                <th scope="col" className={`${COL_HEAD} text-center w-[76px] pr-[16px] border-t border-solid border-(--au-rule)`}>
                   Value
                 </th>
               </tr>
@@ -533,7 +536,7 @@ export default async function HowItHappenedPage({
                 </tr>
               ) : (
                 <>
-                  {named.map((m) => (
+                  {named.map((m, i) => (
                     <tr key={m.market}>
                       <th
                         scope="row"
@@ -543,14 +546,14 @@ export default async function HowItHappenedPage({
                       </th>
                       <td className={`${CELL} text-right`}>
                         <span className="inline-flex items-center justify-end gap-[8px]">
-                          <Bar share={topPlace > 0 ? m.bookings / topPlace : 0} />
+                          <Bar share={topPlace > 0 ? m.bookings / topPlace : 0} delay={i * 60} />
                           <span className="w-[20px] text-right text-[14.5px] leading-[21px] text-(--au-ink)">
                             {m.bookings}
                           </span>
                         </span>
                       </td>
                       <td
-                        className={`${CELL} pr-[16px] text-right text-[13.5px] leading-[20px] text-(--au-muted-strong)`}
+                        className={`${CELL} pr-[16px] text-center text-[13.5px] leading-[21px] text-(--au-muted-strong)`}
                       >
                         {dollars(m.valueCents)}
                       </td>
@@ -573,7 +576,7 @@ export default async function HowItHappenedPage({
                         </span>
                       </td>
                       <td
-                        className={`${CELL} pr-[16px] text-right text-[13.5px] leading-[20px] text-(--au-muted-strong)`}
+                        className={`${CELL} pr-[16px] text-center text-[13.5px] leading-[21px] text-(--au-muted-strong)`}
                       >
                         {dollars(tailValue)}
                       </td>
