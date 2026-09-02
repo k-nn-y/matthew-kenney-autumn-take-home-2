@@ -59,3 +59,9 @@ export function monthTag(iso: string): string {
   const { y, m } = parts(iso);
   return `${MONTHS[m - 1].slice(0, 3).toUpperCase()} \u2019${String(y).slice(2)}`;
 }
+
+/** "August 2026" — the chart card's month, said in full. */
+export function monthSpoken(iso: string): string {
+  const { y, m } = parts(iso);
+  return `${MONTHS[m - 1]} ${y}`;
+}

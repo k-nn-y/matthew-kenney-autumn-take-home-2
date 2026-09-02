@@ -344,6 +344,33 @@ svg.au-draw .au-chart-late {
   }
 }
 
+/* Inspecting a month: a transparent layer over the chart takes the pointer
+   and the arrow keys; the guide line and dots ease in over 80ms, the card
+   (styled below) appears at once and is placed in pixels inside the chart's
+   box, so it is never clipped. */
+
+.au-chart-hit {
+  position: absolute;
+  inset: 0;
+  cursor: crosshair;
+  touch-action: pan-y;
+  outline-offset: 2px;
+}
+
+.au-chart-guide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 80ms var(--au-ease-out-quart);
+}
+
+.au-chart-guide.au-on {
+  opacity: 1;
+}
+
 /* First view of a session: a soft white veil slides down off the chart
    while the line draws, as if the sheet were being written in. */
 .au-chart-veil {
