@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "seed": "node --env-file=.env.local --import tsx db/seed.ts"
+    "seed": "node --env-file=.env.local --import tsx db/seed.ts",
+    "test:reconcile": "node --env-file=.env.local --import tsx tests/reconcile.ts"
   },
   "dependencies": {
     "dotenv": "^17.4.2",
@@ -17,12 +18,14 @@
     "react-dom": "19.2.8"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^20",
     "@types/pg": "^8.23.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.4",
+    "tailwindcss": "^4.3.3",
     "tsx": "^4.23.13",
     "typescript": "^5"
   }

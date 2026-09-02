@@ -61,6 +61,8 @@ export type BookingRow = {
   feeder_market: string;
   device: string;
   campaignName: string | null;
+  /** The ad category the booking is credited to, for the "found you" column. */
+  category: string | null;
 };
 
 export type FeederRow = { market: string; bookings: number; valueCents: number };

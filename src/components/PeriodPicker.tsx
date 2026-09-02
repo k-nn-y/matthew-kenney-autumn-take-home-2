@@ -1,7 +1,13 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useId, useTransition, type ChangeEvent, type FormEvent } from "react";
+import {
+  useEffect,
+  useId,
+  useTransition,
+  type ChangeEvent,
+  type FormEvent,
+} from "react";
 import { PERIOD_OPTIONS, type PeriodKey } from "@/lib/periods";
 import styles from "./PeriodPicker.module.css";
 
@@ -25,6 +31,16 @@ export function PeriodPicker({ value }: { value: PeriodKey }) {
   const pathname = usePathname();
   const [pending, startTransition] = useTransition();
   const selectId = useId();
+
+  /* While the new window's numbers are on their way, the whole sheet dims to
+     60% (globals.css reads this attribute) — the surface acknowledges the
+     change without a single number animating. */
+  useEffect(() => {
+    document.documentElement.toggleAttribute("data-period-pending", pending);
+    return () => {
+      document.documentElement.removeAttribute("data-period-pending");
+    };
+  }, [pending]);
 
   function go(next: string) {
     /* Read the live query string rather than a hook, so any other param a

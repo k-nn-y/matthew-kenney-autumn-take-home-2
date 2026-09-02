@@ -134,6 +134,11 @@ const RANGE_LABELS: Record<RangeKey, [current: string, prior: string, lastYear: 
  * day behind. Falls back to today when the table is empty.
  */
 async function getAnchorDate(): Promise<string> {
+  /* Preview-only escape hatch: pinning the anchor lets a preview deploy show
+     the sparse-window states (not reported yet, too few days) against the
+     same untouched database. Never set in production; see README. */
+  const pinned = process.env.REPORT_ANCHOR_DATE;
+  if (pinned && /^\d{4}-\d{2}-\d{2}$/.test(pinned)) return pinned;
   const rows = await q<{ anchor: string | null }>(
     `SELECT to_char(
               LEAST(
@@ -395,8 +400,7 @@ export async function getInsights(limit = 4): Promise<Insight[]> {
 /**
  * MARKETING axis (booked_at, bucketed in property-local months). Persona rank 4.
  * The month spine is generated, not derived from the rows, so months before the
- * program started come back as honest zeros instead of vanishing — the "before"
- * is the most credible part of the chart.
+ * program started come back as honest zeros instead of vanishing.
  */
 export async function getMonthlySeries(months = 24): Promise<MonthPoint[]> {
   const rows = await q<{ month: string; bookings: NumLike; value_cents: NumLike }>(
@@ -562,6 +566,7 @@ export async function getRecentBookings(period: Period, limit = 12): Promise<Boo
     feeder_market: string;
     device: string;
     campaign_name: string | null;
+    category: string | null;
   }>(
     `SELECT b.booking_id,
             to_char(b.booked_at AT TIME ZONE pr.timezone,
@@ -571,7 +576,8 @@ export async function getRecentBookings(period: Period, limit = 12): Promise<Boo
             b.total_value_cents,
             b.feeder_market,
             b.device,
-            c.display_name                      AS campaign_name
+            c.display_name                      AS campaign_name,
+            c.category                          AS category
        FROM bookings b
        JOIN properties pr     ON pr.property_id = b.property_id
        LEFT JOIN campaigns c  ON c.campaign_id  = b.campaign_id
@@ -593,6 +599,7 @@ export async function getRecentBookings(period: Period, limit = 12): Promise<Boo
     feeder_market: r.feeder_market,
     device: r.device,
     campaignName: r.campaign_name,
+    category: r.category,
   }));
 }
 
@@ -662,5 +669,103 @@ export async function getOccupancy(period: Period): Promise<Occupancy> {
     days,
     occupancy: capacityNights > 0 ? roomNights / capacityNights : 0,
     autumnRoomNights: num(r?.autumn_room_nights),
+  };
+}
+
+/* ------------------------------------------------------------- freshness */
+
+/**
+ * The sheet-head freshness line ("reported through ..."). Read-only: the
+ * latest day any fact reached this report, on either axis, in the property's
+ * own timezone. Saying the date out loud beats implying realtime.
+ */
+export async function getReportedThrough(): Promise<string | null> {
+  const rows = await q<{ through: string | null }>(
+    `SELECT to_char(
+              greatest(
+                (SELECT max(m.metric_date)
+                   FROM ad_metrics_daily m
+                   JOIN campaigns c ON c.campaign_id = m.campaign_id
+                  WHERE c.property_id = $1),
+                (SELECT max((b.booked_at AT TIME ZONE p.timezone)::date)
+                   FROM bookings b
+                   JOIN properties p ON p.property_id = b.property_id
+                  WHERE b.property_id = $1)
+              ), 'YYYY-MM-DD') AS through`,
+    [PROPERTY_ID],
+  );
+  return rows[0]?.through ?? null;
+}
+
+/* ---------------------------------------------------- the rest of the book */
+
+export type HouseTotal = { bookings: number; valueCents: number };
+
+/**
+ * MARKETING axis. Every non-cancelled direct booking in the window, from any
+ * source — the whole book, so the verdict can say which slice of it was ours
+ * and hand the rest back: "the other 201 were already yours."
+ */
+export async function getHouseTotal(period: Period): Promise<HouseTotal> {
+  const rows = await q<{ bookings: NumLike; value_cents: NumLike }>(
+    `SELECT count(*) AS bookings,
+            COALESCE(sum(b.total_value_cents), 0) AS value_cents
+       FROM bookings b
+       JOIN properties pr ON pr.property_id = b.property_id
+      WHERE b.property_id  = $1
+        AND b.cancelled_at IS NULL
+        AND b.booked_at   >= timezone(pr.timezone, $2::timestamp)
+        AND b.booked_at   <  timezone(pr.timezone, ($3::date + 1)::timestamp)`,
+    [PROPERTY_ID, period.start, period.end],
+  );
+  return { bookings: num(rows[0]?.bookings), valueCents: num(rows[0]?.value_cents) };
+}
+
+/* ------------------------------------------------------------- the journey */
+
+export type Journey = {
+  /** Times an ad of ours was shown in the window. */
+  appeared: number;
+  appearedLastYear: number;
+  /** Clicks through to the inn's own site. */
+  visits: number;
+  visitsLastYear: number;
+  /** All sessions on the inn's site in the window, for "N in 100". */
+  siteSessions: number;
+};
+
+/**
+ * MARKETING axis. The three-step strip on screen 2: shown → visited → booked,
+ * this window against the same dates last year. Sums only — the bookings step
+ * comes from getHeadline so the strip can never disagree with the verdict.
+ */
+export async function getJourney(current: Period, lastYear: Period): Promise<Journey> {
+  const sums = (p: Period) =>
+    q<{ appeared: NumLike; visits: NumLike }>(
+      `SELECT COALESCE(sum(m.impressions), 0) AS appeared,
+              COALESCE(sum(m.clicks), 0)      AS visits
+         FROM ad_metrics_daily m
+         JOIN campaigns c ON c.campaign_id = m.campaign_id
+        WHERE c.property_id = $1
+          AND m.metric_date BETWEEN $2::date AND $3::date`,
+      [PROPERTY_ID, p.start, p.end],
+    );
+  const [cur, prior, traffic] = await Promise.all([
+    sums(current),
+    sums(lastYear),
+    q<{ sessions: NumLike }>(
+      `SELECT COALESCE(sum(sessions), 0) AS sessions
+         FROM traffic_daily
+        WHERE property_id = $1
+          AND metric_date BETWEEN $2::date AND $3::date`,
+      [PROPERTY_ID, current.start, current.end],
+    ),
+  ]);
+  return {
+    appeared: num(cur[0]?.appeared),
+    appearedLastYear: num(prior[0]?.appeared),
+    visits: num(cur[0]?.visits),
+    visitsLastYear: num(prior[0]?.visits),
+    siteSessions: num(traffic[0]?.sessions),
   };
 }
