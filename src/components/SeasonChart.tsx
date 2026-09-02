@@ -1,6 +1,8 @@
 import type { MonthPoint } from "@/lib/types";
-import { monthTag } from "@/app/dates";
+import { monthSpoken, monthTag } from "@/app/dates";
+import { dollars } from "@/lib/db";
 import { asWord } from "@/lib/words";
+import { SeasonHover, type HoverPoint } from "@/components/SeasonHover";
 
 /**
  * The shape of the season: 24 months of bookings on the marketing axis,
@@ -97,8 +99,31 @@ export function SeasonChart({
     fill: "var(--au-muted-strong)",
   } as const;
 
+  /* One month at a time, for the pointer and the arrow keys. Worded here on
+     the server so the client layer carries only positions and sentences. */
+  const hover: HoverPoint[] = series.map((p, i) => {
+    const rollV =
+      i >= 2
+        ? Math.round((series[i].bookings + series[i - 1].bookings + series[i - 2].bookings) / 3)
+        : null;
+    return {
+      x: pts[i].x,
+      y: pts[i].y,
+      rollY: i >= 2 ? roll[i - 2].y : null,
+      month: monthSpoken(`${p.month}-01`),
+      count: `${p.bookings} ${p.bookings === 1 ? "booking" : "bookings"} · ${dollars(p.valueCents)}`,
+      roll:
+        rollV !== null
+          ? `About ${rollV} a month, three-month average`
+          : startIdx >= 0 && i < startIdx
+            ? "Before your ads began"
+            : "First months on the sheet",
+    };
+  });
+
   return (
     <div className="relative w-full">
+      <div className="relative w-full">
       <svg
         id="au-season"
         viewBox="-2 -20 1124 186"
@@ -197,14 +222,17 @@ export function SeasonChart({
           </text>
         </g>
       </svg>
-
-      {/* Draw once per session, only when the chart is in view; still and
-          complete under reduced motion or with no JavaScript at all. */}
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `(function(){try{var s=document.getElementById("au-season");if(!s)return;if(window.matchMedia("(prefers-reduced-motion: reduce)").matches)return;if(sessionStorage.getItem("au-season-drawn"))return;var go=function(){s.classList.add("au-draw");try{sessionStorage.setItem("au-season-drawn","1")}catch(e){}};var r=s.getBoundingClientRect();if(r.top<window.innerHeight&&r.bottom>0){go();return}var io=new IntersectionObserver(function(es){for(var i=0;i<es.length;i++){if(es[i].isIntersecting){go();io.disconnect();return}}},{threshold:0.3});io.observe(s)}catch(e){}})();`,
-        }}
+      <SeasonHover
+        points={hover}
+        viewBox={{ x: -2, y: -20, w: 1124, h: 186 }}
+        top={Y_TOP}
+        baseline={Y_BASE}
       />
+      </div>
+
+      {/* The one-time draw lives in SeasonHover, after hydration, so the
+          server HTML and the client agree; still and complete under reduced
+          motion or with no JavaScript at all. */}
 
       {/* The same numbers as rows, for anyone the picture doesn't serve. */}
       <table className="au-sr-only">
