@@ -42,6 +42,7 @@ export function SeasonHover({
   const tip = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState<number | null>(null);
   const [pos, setPos] = useState<{ left: number; top: number } | null>(null);
+  const [veil, setVeil] = useState(false);
 
   const toIndex = (clientX: number) => {
     const el = root.current;
@@ -104,6 +105,7 @@ export function SeasonHover({
     }
     const go = () => {
       svg.classList.add("au-draw");
+      setVeil(true);
       try {
         sessionStorage.setItem("au-season-drawn", "1");
       } catch {
@@ -127,6 +129,16 @@ export function SeasonHover({
     io.observe(svg);
     return () => io.disconnect();
   }, []);
+
+  /* The veil slides down out of the chart's box, so the box clips only
+     while it is moving; afterwards nothing is hidden and the card can
+     stand wherever it needs to. */
+  useEffect(() => {
+    const box = root.current?.parentElement;
+    if (!box) return;
+    box.classList.toggle("overflow-hidden", veil);
+    return () => box.classList.remove("overflow-hidden");
+  }, [veil]);
 
   /* While a month is under inspection the fixed annotations step back. */
   useEffect(() => {
@@ -164,6 +176,13 @@ export function SeasonHover({
       onKeyDown={onKey}
       onBlur={() => setActive(null)}
     >
+      {veil && (
+        <div
+          className="au-chart-veil"
+          aria-hidden="true"
+          onAnimationEnd={() => setVeil(false)}
+        />
+      )}
       <svg
         viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`}
         className={`au-chart-guide${p ? " au-on" : ""}`}

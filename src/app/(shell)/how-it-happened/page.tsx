@@ -442,7 +442,7 @@ export default async function HowItHappenedPage({
                     </span>
                   </td>
                   <td
-                    className={`${CELL} pr-[16px] text-center text-[13.5px] leading-[21px] text-(--au-muted-strong)`}
+                    className={`${CELL} pl-[16px] pr-[16px] text-right align-middle text-[13.5px] leading-[20px] tabular-nums text-(--au-muted-strong)`}
                   >
                     {dollars(w.valueCents)}
                   </td>
@@ -460,7 +460,7 @@ export default async function HowItHappenedPage({
                 <td className="py-[10px] pl-[12px] text-right align-middle text-[14.5px] leading-[20px] tabular-nums text-(--au-ink) border-t border-solid border-(--au-rule-strong)">
                   {total}
                 </td>
-                <td className="py-[10px] pr-[16px] text-center text-[13.5px] leading-[21px] text-(--au-ink) border-t border-solid border-(--au-rule-strong)">
+                <td className="py-[10px] pl-[16px] pr-[16px] text-right align-middle text-[13.5px] leading-[20px] tabular-nums text-(--au-ink) border-t border-solid border-(--au-rule-strong)">
                   {dollars(headline.valueCents)}
                 </td>
               </tr>
@@ -553,7 +553,7 @@ export default async function HowItHappenedPage({
                         </span>
                       </td>
                       <td
-                        className={`${CELL} pr-[16px] text-center text-[13.5px] leading-[21px] text-(--au-muted-strong)`}
+                        className={`${CELL} pl-[16px] pr-[16px] text-right align-middle text-[13.5px] leading-[20px] tabular-nums text-(--au-muted-strong)`}
                       >
                         {dollars(m.valueCents)}
                       </td>
@@ -576,7 +576,7 @@ export default async function HowItHappenedPage({
                         </span>
                       </td>
                       <td
-                        className={`${CELL} pr-[16px] text-center text-[13.5px] leading-[21px] text-(--au-muted-strong)`}
+                        className={`${CELL} pl-[16px] pr-[16px] text-right align-middle text-[13.5px] leading-[20px] tabular-nums text-(--au-muted-strong)`}
                       >
                         {dollars(tailValue)}
                       </td>
