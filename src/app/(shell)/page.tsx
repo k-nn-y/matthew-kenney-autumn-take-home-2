@@ -147,6 +147,17 @@ export default async function ResultsPage({
     !notLive && (!reportedThrough || reportedThrough < current.start);
   const zero = headline.bookings === 0;
   const [rangeStart, rangeEnd] = spokenRange(current.start, current.end);
+  /* The frame's verdict is two lines at 1440: "From … , N bookings" then
+     "came through Autumn's ads, worth $X." A window that crosses a year says
+     both years and no longer fits at 45px, so it takes the next size down. */
+  const verdictLong =
+    `From ${rangeStart} to ${rangeEnd}, ${headline.bookings} bookings`.length > 46;
+  const VERDICT_SIZE = verdictLong
+    ? "text-[34px] leading-[42px] sm:text-[36px] sm:leading-[42px] min-[1440px]:text-[40px] min-[1440px]:leading-[46px]"
+    : "text-[34px] leading-[42px] sm:text-[36px] sm:leading-[42px] xl:text-[40px] xl:leading-[46px] min-[1440px]:text-[45px] min-[1440px]:leading-[50px]";
+  const VERDICT_MONEY = verdictLong
+    ? "sm:text-[42px] sm:leading-[46px] min-[1440px]:text-[48px] min-[1440px]:leading-[50px]"
+    : "sm:text-[42px] sm:leading-[46px] xl:text-[48px] xl:leading-[50px] min-[1440px]:text-[54px] min-[1440px]:leading-[54px]";
 
   const feePct = Math.round((cost.autumnFeePct || 0.13) * 100);
   const otaPct = Math.round((cost.otaCommissionPct || 0.17) * 100);
@@ -218,7 +229,7 @@ export default async function ResultsPage({
         <section aria-labelledby="verdict" className="flex flex-col w-full gap-[4px]">
           <h1
             id="verdict"
-            className="text-[34px] leading-[42px] sm:text-[45px] sm:leading-[50px] tracking-[-0.026em] text-(--au-ink) max-w-[900px] pt-[8px]"
+            className={`${VERDICT_SIZE} tracking-[-0.026em] max-w-none`}
           >
             Nothing to show yet — and that&rsquo;s expected.
           </h1>
@@ -278,7 +289,7 @@ export default async function ResultsPage({
         {zero ? (
           <h1
             id="verdict"
-            className="text-[34px] leading-[42px] sm:text-[45px] sm:leading-[50px] tracking-[-0.026em] max-w-[900px]"
+            className={`${VERDICT_SIZE} tracking-[-0.026em] max-w-none`}
           >
             <span className="text-(--au-body)">
               From {rangeStart} to {rangeEnd},{" "}
@@ -290,7 +301,7 @@ export default async function ResultsPage({
         ) : (
           <h1
             id="verdict"
-            className="text-[34px] leading-[42px] sm:text-[45px] sm:leading-[50px] tracking-[-0.026em] max-w-[900px]"
+            className={`${VERDICT_SIZE} tracking-[-0.026em] max-w-none`}
           >
             <span className="text-(--au-body)">
               From {rangeStart} to {rangeEnd},{" "}
@@ -308,7 +319,7 @@ export default async function ResultsPage({
               {" "}
               came through Autumn&rsquo;s ads, worth{" "}
             </span>
-            <span className="text-(--au-ink) sm:text-[54px] sm:leading-[54px] sm:tracking-[-0.03em] sm:opsz-32">
+            <span className={`${VERDICT_MONEY} text-(--au-ink) sm:tracking-[-0.03em] sm:opsz-32`}>
               <CountUp
                 value={Math.round(headline.valueCents / 100)}
                 text={dollars(headline.valueCents)}
